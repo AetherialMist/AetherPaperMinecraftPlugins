@@ -157,8 +157,7 @@ public class Persistence {
      * @return The Yaml file
      */
     public Optional<File> getYamlFile(String subfolder, String filename, boolean create) {
-        String pathname = getDataSubfolder(subfolder).getPath() + File.pathSeparatorChar + filename + YAML_FILE_EXT;
-        File file = new File(pathname);
+        File file = new File(getDataSubfolder(subfolder), filename + YAML_FILE_EXT);
 
         if (!file.exists() && create) {
             String message = String.format("%sFailed to create file: %s", LOG_PREFIX, file.getPath());
@@ -191,8 +190,7 @@ public class Persistence {
      * @return True if the file was deleted, otherwise false
      */
     public boolean deleteYamlFile(String subfolder, String filename) {
-        String pathname = getDataSubfolder(subfolder).getPath() + File.pathSeparatorChar + filename + YAML_FILE_EXT;
-        File file = new File(pathname);
+        File file = new File(getDataSubfolder(subfolder), filename +YAML_FILE_EXT);
 
         if (!file.exists()) {
             return true;

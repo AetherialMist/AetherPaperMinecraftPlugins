@@ -92,7 +92,7 @@ public class TpRequest extends CommandWrapper {
         // Validate there is a request to accept
         if (optionalRequest.isEmpty()) {
             commandSender.sendMessage(NO_PENDING_REQUESTS);
-            return optionalAccepter; // Return the command sender
+            return Optional.empty(); // Return the command sender
         }
         TpRequestRecord request = optionalRequest.get();
 

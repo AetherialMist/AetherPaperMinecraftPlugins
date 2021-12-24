@@ -37,13 +37,14 @@ public class LocationYamlConverter {
 
     public static Location fromYamlMap(Server server, Map<String, Object> data) {
         UUID worldUUID = UUID.fromString((String) data.get(WORLD_UUID));
+        // Casting the float data to a string before parsing does not work, but string concat does.
         return new Location(
             server.getWorld(worldUUID),
             (double) data.get(X_DATA),
             (double) data.get(Y_DATA),
             (double) data.get(Z_DATA),
-            Float.parseFloat((String) data.get(YAW_DATA)),
-            Float.parseFloat((String) data.get(PITCH_DATA))
+            Float.parseFloat("" + data.get(YAW_DATA)),
+            Float.parseFloat("" + data.get(PITCH_DATA))
         );
     }
 

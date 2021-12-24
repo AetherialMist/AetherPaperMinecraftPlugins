@@ -26,7 +26,7 @@ public class DeleteWarp extends CommandWrapper {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
-        if (optionalPlayer.isEmpty() || Common.verifyExactlyOneArg(commandSender, args)) {
+        if (optionalPlayer.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
             return false;
         }
 

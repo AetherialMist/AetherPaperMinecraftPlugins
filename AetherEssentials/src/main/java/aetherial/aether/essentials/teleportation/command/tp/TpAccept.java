@@ -22,7 +22,9 @@ public class TpAccept extends CommandWrapper {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        return TpRequest.replyToRequest(commandSender, label, args, true).isPresent();
+        TpRequest.replyToRequest(commandSender, label, args, true);
+
+        return true;
     }
 
     @Override

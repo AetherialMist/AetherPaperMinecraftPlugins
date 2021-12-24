@@ -33,7 +33,7 @@ public class TpDeny extends CommandWrapper {
         // Get the sender of the request (not this command's sender)
         Optional<Player> optional = TpRequest.replyToRequest(commandSender, label, args, false);
         if (optional.isEmpty()) {
-            return false;
+            return true;
         }
         Player requestSender = optional.get();
 
