@@ -3,7 +3,7 @@ package aetherial.aether.essentials.teleportation.command.warp;
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.exception.AlreadyInitialized;
 import aetherial.aether.essentials.exception.NotInitialized;
-import aetherial.aether.essentials.teleportation.command.LocationYamlConverter;
+import aetherial.aether.essentials.teleportation.command.LocationMapConverter;
 import aetherial.aether.essentials.util.Persistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +18,7 @@ public class WarpStorage {
 
     private static WarpStorage instance;
     private static final Map<String, Location> warpLocations = new ConcurrentHashMap<>();
-    private static final String WARPS_FOLDER_NAME = "warps";
+    private static final String WARPS_SUBFOLDER = "warps";
 
     public static WarpStorage getInstance() {
         if (instance == null) {
@@ -38,7 +38,7 @@ public class WarpStorage {
     private final File warpsFolder;
 
     private WarpStorage(JavaPlugin plugin) {
-        warpsFolder = Persistence.getInstance().getDataSubfolder(WARPS_FOLDER_NAME);
+        warpsFolder = Persistence.getInstance().getDataSubfolder(WARPS_SUBFOLDER);
         loadSavedWarps(plugin);
     }
 
@@ -61,8 +61,8 @@ public class WarpStorage {
             }
             Map<String, Object> data = optionalData.get();
 
-            Location location = LocationYamlConverter.fromYamlMap(plugin.getServer(), data);
-            String warpName = (String) data.get(LocationYamlConverter.NAME_DATA);
+            Location location = LocationMapConverter.fromMap(plugin.getServer(), data);
+            String warpName = (String) data.get(LocationMapConverter.NAME_DATA);
 
             warpLocations.put(warpName, location);
         }
@@ -87,9 +87,9 @@ public class WarpStorage {
     }
 
     private boolean saveWarp(String warpName, Location location) {
-        Map<String, Object> data = LocationYamlConverter.toYamlMap(warpName, location);
+        Map<String, Object> data = LocationMapConverter.toMap(warpName, location);
 
-        return Persistence.getInstance().writeFileYaml(WARPS_FOLDER_NAME, warpName, data, true);
+        return Persistence.getInstance().writeFileYaml(WARPS_SUBFOLDER, warpName, data, true);
     }
 
     public Optional<Location> deleteWarpLocation(String warpName) {
@@ -102,7 +102,7 @@ public class WarpStorage {
     }
 
     private boolean deleteWarp(String warpName) {
-        return Persistence.getInstance().deleteYamlFile(WARPS_FOLDER_NAME, warpName);
+        return Persistence.getInstance().deleteYamlFile(WARPS_SUBFOLDER, warpName);
     }
 
     public List<String> onTabComplete(String arg) {

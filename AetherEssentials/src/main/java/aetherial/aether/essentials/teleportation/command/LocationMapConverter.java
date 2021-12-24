@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LocationYamlConverter {
+public class LocationMapConverter {
 
     public static final String NAME_DATA = "name";
 
@@ -18,11 +18,11 @@ public class LocationYamlConverter {
     private static final String PITCH_DATA = "pitch";
     private static final String YAW_DATA = "yaw";
 
-    private LocationYamlConverter() {
+    private LocationMapConverter() {
 
     }
 
-    public static Map<String, Object> toYamlMap(String label, Location location) {
+    public static Map<String, Object> toMap(String label, Location location) {
         Map<String, Object> data = new HashMap<>();
         data.put(NAME_DATA, label);
         data.put(WORLD_UUID, location.getWorld().getUID().toString());
@@ -35,7 +35,7 @@ public class LocationYamlConverter {
         return data;
     }
 
-    public static Location fromYamlMap(Server server, Map<String, Object> data) {
+    public static Location fromMap(Server server, Map<String, Object> data) {
         UUID worldUUID = UUID.fromString((String) data.get(WORLD_UUID));
         // Casting the float data to a string before parsing does not work, but string concat does.
         return new Location(
