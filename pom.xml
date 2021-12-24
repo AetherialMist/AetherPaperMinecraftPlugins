@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.bitbukkit.aetherial1</groupId>
+    <groupId>com.github.aetherial</groupId>
     <artifactId>aether-paper-minecraft-plugins</artifactId>
     <name>Aether Paper Plugins</name>
     <version>${revision}</version>
@@ -27,10 +27,6 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -40,11 +36,6 @@
                 <artifactId>paper-api</artifactId>
                 <version>1.18.1-R0.1-SNAPSHOT</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>aetherial</groupId>
-                <artifactId>spigot-plugin-annotations</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
             <dependency>
@@ -60,7 +51,7 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.bitbukkit.aetherial1</groupId>
+                <groupId>com.github.aetherial</groupId>
                 <artifactId>spigot-plugin-annotations</artifactId>
                 <version>${revision}</version>
             </dependency>

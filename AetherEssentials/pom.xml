@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>aether-paper-minecraft-plugins</artifactId>
-        <groupId>org.bitbukkit.aetherial1</groupId>
+        <groupId>com.github.aetherial</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bitbukkit.aetherial1</groupId>
+            <groupId>com.github.aetherial</groupId>
             <artifactId>spigot-plugin-annotations</artifactId>
         </dependency>
         <dependency>

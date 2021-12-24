@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>aether-paper-minecraft-plugins</artifactId>
-        <groupId>org.bitbukkit.aetherial1</groupId>
+        <groupId>com.github.aetherial</groupId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
