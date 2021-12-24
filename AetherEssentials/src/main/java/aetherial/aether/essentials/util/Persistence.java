@@ -20,7 +20,6 @@ import java.util.Optional;
 public class Persistence {
 
     private static Persistence instance;
-    private static final String LOG_PREFIX = "[Persistence] ";
     public static final String YAML_FILE_EXT = ".yml";
 
     public static void init(JavaPlugin plugin) {
@@ -47,7 +46,7 @@ public class Persistence {
     /**
      * Get a subfolder from this plugin's dataFolder.
      * <p>
-     * Will attempt to create the subfolder if it does not already exist
+     * Will attempt to create the subfolder if it does not already exist.
      *
      * @param subfolder The name of the subfolder in this plugin's dataFolder
      * @return The subfolder in this plugin's dataFolder
@@ -92,7 +91,7 @@ public class Persistence {
      */
     public Optional<Map<String, Object>> readYamlFile(File file) {
         if (!file.exists()) {
-            String message = String.format("%sFile does not exist: %s", LOG_PREFIX, file.getPath());
+            String message = String.format("File does not exist: %s", file.getPath());
             log.error(message);
         }
 
@@ -101,7 +100,7 @@ public class Persistence {
         try {
             data = yaml.load(new FileReader(file));
         } catch (FileNotFoundException e) {
-            String message = String.format("%sFailed to read from file: %s", LOG_PREFIX, file.getPath());
+            String message = String.format("Failed to read from file: %s", file.getPath());
             log.error(message);
         }
         return Optional.ofNullable(data);
@@ -116,7 +115,7 @@ public class Persistence {
      * @param create    True to create the file if it does not already exist, otherwise false
      * @return True if the file was written to, otherwise false
      */
-    public boolean writeFileYaml(String subfolder, String filename, Map<String, Object> data, boolean create) {
+    public boolean writeFileYaml(String subfolder, String filename, Map<String, ?> data, boolean create) {
         Optional<File> optional = getYamlFile(subfolder, filename, create);
         if (optional.isEmpty()) {
             return false;
@@ -129,7 +128,7 @@ public class Persistence {
             writer.write(raw);
             writer.flush();
         } catch (IOException e) {
-            String message = String.format("%sFailed to write to file: %s", LOG_PREFIX, file.getPath());
+            String message = String.format("Failed to write to file: %s", file.getPath());
             log.error(message);
             return false;
         }
@@ -160,7 +159,7 @@ public class Persistence {
         File file = new File(getDataSubfolder(subfolder), filename + YAML_FILE_EXT);
 
         if (!file.exists() && create) {
-            String message = String.format("%sFailed to create file: %s", LOG_PREFIX, file.getPath());
+            String message = String.format("Failed to create file: %s", file.getPath());
             Path path = file.toPath();
             try {
                 Files.createFile(path);
@@ -174,7 +173,7 @@ public class Persistence {
                 return Optional.empty();
             }
         } else if (!file.exists()) {
-            String message = String.format("%sFiles does not exist: %s", LOG_PREFIX, file.getPath());
+            String message = String.format("Files does not exist: %s", file.getPath());
             log.error(message);
             return Optional.empty();
         }
@@ -190,7 +189,7 @@ public class Persistence {
      * @return True if the file was deleted, otherwise false
      */
     public boolean deleteYamlFile(String subfolder, String filename) {
-        File file = new File(getDataSubfolder(subfolder), filename +YAML_FILE_EXT);
+        File file = new File(getDataSubfolder(subfolder), filename + YAML_FILE_EXT);
 
         if (!file.exists()) {
             return true;
@@ -200,7 +199,7 @@ public class Persistence {
             Files.delete(file.toPath());
             return true;
         } catch (IOException e) {
-            log.error(String.format("%sFailed to delete file: %s", LOG_PREFIX, file.getPath()));
+            log.error(String.format("Failed to delete file: %s", file.getPath()));
             return false;
         }
     }

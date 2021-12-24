@@ -55,16 +55,18 @@ public class WarpStorage {
         for (File file : files) {
             Optional<Map<String, Object>> optionalData = Persistence.getInstance().readYamlFile(file);
             if (optionalData.isEmpty()) {
-                String message = String.format("Failed to load saved Warp with file name: %s", file.getName());
-                log.warn(message);
                 continue;
             }
             Map<String, Object> data = optionalData.get();
 
-            Location location = LocationMapConverter.fromMap(plugin.getServer(), data);
-            String warpName = (String) data.get(LocationMapConverter.NAME_DATA);
+            Optional<Location> optionalLocation = LocationMapConverter.fromMap(plugin.getServer(), data);
 
-            warpLocations.put(warpName, location);
+            if (optionalLocation.isPresent()) {
+                Location location = optionalLocation.get();
+                String warpName = (String) data.get(LocationMapConverter.NAME_DATA);
+
+                warpLocations.put(warpName, location);
+            }
         }
     }
 
