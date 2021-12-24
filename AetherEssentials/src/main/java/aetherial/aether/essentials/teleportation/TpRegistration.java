@@ -3,10 +3,7 @@ package aetherial.aether.essentials.teleportation;
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.teleportation.command.Back;
 import aetherial.aether.essentials.teleportation.command.tp.*;
-import aetherial.aether.essentials.teleportation.command.warp.DeleteWarp;
-import aetherial.aether.essentials.teleportation.command.warp.SetWarp;
-import aetherial.aether.essentials.teleportation.command.warp.Warp;
-import aetherial.aether.essentials.teleportation.command.warp.WarpStorage;
+import aetherial.aether.essentials.teleportation.command.warp.*;
 import aetherial.aether.essentials.wrapper.CommandWrapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,7 +65,10 @@ public class TpRegistration {
         registerCommand(TP_DENY, new TpDeny());
         registerCommand(TP_CANCEL, new TpCancel());
         registerCommand(TP_TOGGLE, TpToggle.getInstance());
+
         registerCommand(WARP, new Warp());
+        registerCommand(WARPS, new Warps());
+        registerCommand(WARP_INFO, new WarpInfo());
         registerCommand(SET_WARP, new SetWarp());
         registerCommand(DELETE_WARP, new DeleteWarp());
     }

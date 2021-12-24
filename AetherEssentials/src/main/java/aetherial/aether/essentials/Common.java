@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +75,7 @@ public class Common {
         return Optional.of(player);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean verifyExactlyOneArg(CommandSender commandSender, String[] args) {
         if (args.length != 1) {
             commandSender.sendMessage(exactlyOneArgExpected);
@@ -84,6 +84,7 @@ public class Common {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean verifyNoArgs(CommandSender commandSender, String[] args) {
         if (args.length != 0) {
             commandSender.sendMessage(noArgsExpected);

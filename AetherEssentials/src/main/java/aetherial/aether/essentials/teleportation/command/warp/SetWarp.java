@@ -2,7 +2,6 @@ package aetherial.aether.essentials.teleportation.command.warp;
 
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.Common;
-import aetherial.aether.essentials.chat.ChatColorFormatter;
 import aetherial.aether.essentials.teleportation.TpRegistration;
 import aetherial.aether.essentials.wrapper.CommandWrapper;
 import aetherial.spigot.plugin.annotation.command.CommandTag;

@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static aetherial.aether.essentials.chat.ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE;
+import static aetherial.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
+
 @CommandTag(
     name = TpRegistration.DELETE_WARP,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.DELETE_WARP + " <warp>",
@@ -23,14 +26,27 @@ public class DeleteWarp extends CommandWrapper {
 
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.DELETE_WARP;
 
+    private final String warpDeletedPrefix = applyDefaultMessageColor("Warp deleted: " + DEFAULT_PLAYER_COLOR_CODE);
+    private final String warpDeleteFailedPrefix = applyDefaultMessageColor("Failed to delete warp: " + DEFAULT_PLAYER_COLOR_CODE);
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
         if (optionalPlayer.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
             return false;
         }
+        Player player = optionalPlayer.get();
+        String warpName = args[0];
 
-        return WarpStorage.getInstance().deleteWarpLocation(args[0]).isPresent();
+        boolean deleted = WarpStorage.getInstance().deleteWarpLocation(warpName).isPresent();
+
+        if (deleted) {
+            player.sendMessage(warpDeletedPrefix + warpName);
+        } else {
+            player.sendMessage(warpDeleteFailedPrefix + warpName);
+        }
+
+        return true;
     }
 
     @Override

@@ -28,6 +28,8 @@ public class TpDeny extends CommandWrapper {
     private final String senderMessageSuffix = applyDefaultMessageColor(" was denied");
     private final String accepterMessagePrefix = applyDefaultMessageColor("You denied the teleport request from: " + DEFAULT_COMMAND_COLOR_CODE);
 
+    // This should always return true
+    @SuppressWarnings("java:S3516")
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         // Get the sender of the request (not this command's sender)
