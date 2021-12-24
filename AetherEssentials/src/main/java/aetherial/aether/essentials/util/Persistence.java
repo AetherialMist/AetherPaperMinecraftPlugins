@@ -72,7 +72,7 @@ public class Persistence {
      * Read data from a Yaml file.
      *
      * @param subfolder The subfolder in this plugin's dataFolder
-     * @param filename  The file name in the subfolder
+     * @param filename  The file name in the subfolder without the extension
      * @return The data stored in the file
      */
     public Optional<Map<String, Object>> readYamlFile(String subfolder, String filename) {
@@ -111,7 +111,7 @@ public class Persistence {
      * Writes to a Yaml file.
      *
      * @param subfolder The subfolder in this plugin's dataFolder
-     * @param filename  The file name in the subfolder
+     * @param filename  The file name in the subfolder without the extension
      * @param data      The Yaml data to write
      * @param create    True to create the file if it does not already exist, otherwise false
      * @return True if the file was written to, otherwise false
@@ -135,6 +135,17 @@ public class Persistence {
         }
 
         return true;
+    }
+
+    /**
+     * Get a Yaml file from a subfolder.
+     *
+     * @param subfolder The subfolder in this plugin's dataFolder
+     * @param filename  The file name in the subfolder without the extension
+     * @return The Yaml file
+     */
+    public Optional<File> getYamlFile(String subfolder, String filename) {
+        return getYamlFile(subfolder, filename, false);
     }
 
     /**

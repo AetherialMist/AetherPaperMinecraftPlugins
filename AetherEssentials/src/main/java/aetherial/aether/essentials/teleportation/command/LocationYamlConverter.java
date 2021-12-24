@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class LocationConverter {
+public class LocationYamlConverter {
 
     public static final String NAME_DATA = "name";
 
@@ -18,7 +18,7 @@ public class LocationConverter {
     private static final String PITCH_DATA = "pitch";
     private static final String YAW_DATA = "yaw";
 
-    private LocationConverter() {
+    private LocationYamlConverter() {
 
     }
 

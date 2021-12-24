@@ -3,7 +3,7 @@ package aetherial.aether.essentials.teleportation.command.warp;
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.exception.AlreadyInitialized;
 import aetherial.aether.essentials.exception.NotInitialized;
-import aetherial.aether.essentials.teleportation.command.LocationConverter;
+import aetherial.aether.essentials.teleportation.command.LocationYamlConverter;
 import aetherial.aether.essentials.util.Persistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,8 +61,8 @@ public class WarpStorage {
             }
             Map<String, Object> data = optionalData.get();
 
-            Location location = LocationConverter.fromYamlMap(plugin.getServer(), data);
-            String warpName = (String) data.get(LocationConverter.NAME_DATA);
+            Location location = LocationYamlConverter.fromYamlMap(plugin.getServer(), data);
+            String warpName = (String) data.get(LocationYamlConverter.NAME_DATA);
 
             warpLocations.put(warpName, location);
         }
@@ -87,7 +87,7 @@ public class WarpStorage {
     }
 
     private boolean saveWarp(String warpName, Location location) {
-        Map<String, Object> data = LocationConverter.toYamlMap(warpName, location);
+        Map<String, Object> data = LocationYamlConverter.toYamlMap(warpName, location);
 
         return Persistence.getInstance().writeFileYaml(WARPS_FOLDER_NAME, warpName, data, true);
     }

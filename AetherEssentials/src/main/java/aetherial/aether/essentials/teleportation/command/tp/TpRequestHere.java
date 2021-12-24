@@ -11,19 +11,14 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@value #DESCRIPTION}
- */
 @CommandTag(
     name = TpRegistration.TP_REQUEST_HERE,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.TP_REQUEST + "<player>",
-    desc = TpRequestHere.DESCRIPTION,
-    permission = TpRequestHere.PERMISSION,
-    aliases = {"tpahere", "aetprhere", "aetpahere"}
+    desc = "Request another player to teleport to you",
+    permission = TpRequestHere.PERMISSION
 )
 public class TpRequestHere extends CommandWrapper {
 
-    public static final String DESCRIPTION = "Request another player to teleport to you";
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_REQUEST_HERE;
 
     @Override

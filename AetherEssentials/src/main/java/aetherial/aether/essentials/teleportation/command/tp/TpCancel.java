@@ -13,29 +13,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static aetherial.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
+import static aetherial.aether.essentials.chat.ChatColorFormatter.*;
 
-/**
- * {@value #DESCRIPTION}
- * <p>
- * By setting all the message Strings as class variables, we create
- * them once. Instead of each time the command is used.
- */
 @CommandTag(
     name = TpRegistration.TP_CANCEL,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.TP_CANCEL,
-    desc = TpCancel.DESCRIPTION,
+    desc = "Cancel your active pending teleport request",
     permission = TpCancel.PERMISSION
 )
 public class TpCancel extends CommandWrapper {
 
-    public static final String DESCRIPTION = "Cancel your active pending teleport request";
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_CANCEL;
 
     private final String noPendingRequests = applyDefaultMessageColor("You don't have any requests to cancel");
-    private final String accepterMessagePrefix = applyDefaultMessageColor("");
+    private final String accepterMessagePrefix = applyColor(DEFAULT_PLAYER_COLOR_CODE);
     private final String accepterMessageSuffix = applyDefaultMessageColor(" canceled their tp request");
-    private final String senderMessagePrefix = applyDefaultMessageColor("You canceled your request to: ");
+    private final String senderMessagePrefix = applyDefaultMessageColor("You canceled your request to: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -55,7 +48,7 @@ public class TpCancel extends CommandWrapper {
         Player accepter = request.accepter();
 
         // Notify the Players
-        accepter.sendMessage(this.accepterMessagePrefix + sender + this.accepterMessageSuffix);
+        accepter.sendMessage(this.accepterMessagePrefix + sender.getName() + this.accepterMessageSuffix);
         sender.sendMessage(senderMessagePrefix + accepter.getName());
 
         return true;

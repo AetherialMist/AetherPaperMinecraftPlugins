@@ -16,6 +16,7 @@ public class ChatColorFormatter {
     public static final char FORMAT_CHAR = '&';
     public static final String DEFAULT_COMMAND_COLOR_CODE = FORMAT_CHAR + "" + ChatColor.DARK_RED.getChar();
     public static final String DEFAULT_MESSAGE_COLOR_CODE = FORMAT_CHAR + "" + ChatColor.GOLD.getChar();
+    public static final String DEFAULT_PLAYER_COLOR_CODE = FORMAT_CHAR + "" + ChatColor.YELLOW.getChar();
 
     private static ChatColorFormatter instance;
 

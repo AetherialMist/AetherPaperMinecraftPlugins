@@ -2,7 +2,6 @@ package aetherial.aether.essentials.teleportation.command;
 
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.Common;
-import aetherial.aether.essentials.chat.ChatColorFormatter;
 import aetherial.aether.essentials.teleportation.TpHistoryTracker;
 import aetherial.aether.essentials.teleportation.TpRegistration;
 import aetherial.aether.essentials.wrapper.CommandWrapper;
@@ -60,7 +59,9 @@ public class Back extends CommandWrapper {
         Location beforeLocation = optionalLocation.get();
 
         // Track the TP history
-        tracker.updateBeforeLocation(player, player.getLocation());
+        if (player.hasPermission(PERMISSION_ON_TP)) {
+            tracker.updateBeforeLocation(player, player.getLocation());
+        }
 
         // Teleport the player
         player.teleport(beforeLocation);

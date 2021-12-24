@@ -14,19 +14,17 @@ import java.util.*;
 
 import static aetherial.aether.essentials.chat.ChatColorFormatter.*;
 
-/**
- * {@value #DESCRIPTION}
- */
 @CommandTag(
     name = TpRegistration.TP_TOGGLE,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.TP_TOGGLE,
-    desc = TpToggle.DESCRIPTION,
+    desc = "Toggle [allow] or [auto-deny] teleport requests",
     permission = TpToggle.PERMISSION
 )
 public class TpToggle extends CommandWrapper {
 
-    public static final String DESCRIPTION = "Toggle [allow] or [auto-deny] teleport requests";
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_TOGGLE;
+
+    private final String failedToggle = applyColor("Failed to toggle auto-deny");
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -37,11 +35,13 @@ public class TpToggle extends CommandWrapper {
         Player sender = optionalPlayer.get();
 
         boolean autoDenyEnabled = autoDenyEnabledList.contains(sender.getUniqueId());
-        if (autoDenyEnabled) {
-            autoDenyEnabledList.remove(sender.getUniqueId());
-        } else {
-            autoDenyEnabledList.add(sender.getUniqueId());
+        boolean changedEnabled = autoDenyEnabled ? autoDenyEnabledList.remove(sender.getUniqueId()) : autoDenyEnabledList.add(sender.getUniqueId());
+
+        if (!changedEnabled) {
+            sender.sendMessage(failedToggle);
+            return true;
         }
+
         sender.sendMessage(senderMessagePrefix + !autoDenyEnabled);
 
         return true;
@@ -72,13 +72,6 @@ public class TpToggle extends CommandWrapper {
     }
 
     private final String senderMessagePrefix = applyColor(DEFAULT_MESSAGE_COLOR_CODE + "Tp request auto-deny set to: " + DEFAULT_COMMAND_COLOR_CODE);
-
-    /**
-     * @return A copy of the auto-deny enabled Players
-     */
-    public List<UUID> getAutoDenyEnabled() {
-        return new ArrayList<>(autoDenyEnabledList);
-    }
 
     /**
      * @param player The player to check if they have auto-deny enabled

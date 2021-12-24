@@ -2,7 +2,6 @@ package aetherial.aether.essentials.teleportation;
 
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.teleportation.command.Back;
-import aetherial.aether.essentials.teleportation.command.Testing;
 import aetherial.aether.essentials.teleportation.command.tp.*;
 import aetherial.aether.essentials.teleportation.command.warp.DeleteWarp;
 import aetherial.aether.essentials.teleportation.command.warp.SetWarp;
@@ -72,7 +71,6 @@ public class TpRegistration {
         registerCommand(WARP, new Warp());
         registerCommand(SET_WARP, new SetWarp());
         registerCommand(DELETE_WARP, new DeleteWarp());
-        registerCommand(Testing.COMMAND_LABEL, new Testing());
     }
 
     private void registerCommand(String commandLabel, CommandWrapper commandWrapper) {

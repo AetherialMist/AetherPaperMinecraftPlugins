@@ -5,7 +5,6 @@ import aetherial.aether.essentials.Common;
 import aetherial.aether.essentials.teleportation.TpRegistration;
 import aetherial.aether.essentials.wrapper.CommandWrapper;
 import aetherial.spigot.plugin.annotation.command.CommandTag;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,12 +31,7 @@ public class SetWarp extends CommandWrapper {
         }
         Player player = optionalPlayer.get();
 
-        String warpName = args[0];
-        Location location = player.getLocation();
-
-        Optional<Location> optional = WarpStorage.getInstance().setWarpLocation(warpName, location);
-
-        return optional.isPresent();
+        return WarpStorage.getInstance().setWarpLocation(args[0], player.getLocation()).isPresent();
     }
 
     @Override

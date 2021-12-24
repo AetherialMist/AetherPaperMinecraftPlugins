@@ -17,22 +17,14 @@ import java.util.Optional;
 
 import static aetherial.aether.essentials.chat.ChatColorFormatter.*;
 
-/**
- * {@value #DESCRIPTION}
- * <p>
- * By setting all the message Strings as class variables, we create
- * them once. Instead of each time the command is used.
- */
 @CommandTag(
     name = TpRegistration.TP_REQUEST,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.TP_REQUEST + " <player>",
-    desc = TpRequest.DESCRIPTION,
-    permission = TpRequest.PERMISSION,
-    aliases = {"tpa", "aetpr", "aetpa"}
+    desc = "Request to teleport to another player",
+    permission = TpRequest.PERMISSION
 )
 public class TpRequest extends CommandWrapper {
 
-    public static final String DESCRIPTION = "Request to teleport to another player";
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_REQUEST;
 
     @Override
@@ -48,10 +40,11 @@ public class TpRequest extends CommandWrapper {
     //==========================================================================
 
     private static final String NO_PENDING_REQUESTS = applyDefaultMessageColor("You don't have any pending requests");
-    private static final String SENDER_MESSAGE_PREFIX = applyDefaultMessageColor("Request sent to: ");
-    private static final String ACCEPTER_MESSAGE_PREFIX = applyColor(DEFAULT_COMMAND_COLOR_CODE);
-    private static final String ACCEPTER_MESSAGE_MIDDLE = applyDefaultMessageColor(" has sent a " + DEFAULT_COMMAND_COLOR_CODE);
-    private static final String ACCEPTER_MESSAGE_SUFFIX = applyColor(String.format("%s request. Type %s/%s %sto accept or %s/%s %sto decline",
+    private static final String SENDER_MESSAGE_PREFIX = applyDefaultMessageColor("You sent a " + DEFAULT_COMMAND_COLOR_CODE);
+    private static final String SENDER_MESSAGE_MIDDLE = applyDefaultMessageColor(" request sent to: " + DEFAULT_PLAYER_COLOR_CODE);
+    public static final String ACCEPTER_MESSAGE_PREFIX = applyColor(DEFAULT_PLAYER_COLOR_CODE);
+    public static final String ACCEPTER_MESSAGE_MIDDLE = applyDefaultMessageColor(" has sent a " + DEFAULT_COMMAND_COLOR_CODE);
+    public static final String ACCEPTER_MESSAGE_SUFFIX = applyColor(String.format("%s request. Type %s/%s %sto accept or %s/%s %sto decline",
         DEFAULT_MESSAGE_COLOR_CODE, DEFAULT_COMMAND_COLOR_CODE, TpRegistration.TP_ACCEPT, DEFAULT_MESSAGE_COLOR_CODE,
         DEFAULT_COMMAND_COLOR_CODE, TpRegistration.TP_DENY, DEFAULT_MESSAGE_COLOR_CODE));
 
@@ -63,25 +56,25 @@ public class TpRequest extends CommandWrapper {
         Player sender = optionalPlayer.get();
 
         // Validate first argument is an online Player
-        Optional<Player> optionalTarget = Common.verifyArgIsOnlinePlayer(commandSender, args[0]);
-        if (optionalTarget.isEmpty()) {
+        Optional<Player> optionalAccepter = Common.verifyArgIsOnlinePlayer(commandSender, args[0]);
+        if (optionalAccepter.isEmpty()) {
             return false;
         }
-        Player target = optionalTarget.get();
+        Player accepter = optionalAccepter.get();
 
-        sender.sendMessage(SENDER_MESSAGE_PREFIX + target.getName());
+        sender.sendMessage(SENDER_MESSAGE_PREFIX + commandLabel + SENDER_MESSAGE_MIDDLE + accepter.getName());
 
         // If the accepter has auto-deny enabled, silently fail
-        if (TpToggle.getInstance().getAutoDenyEnabled(target)) {
+        if (TpToggle.getInstance().getAutoDenyEnabled(accepter)) {
             return true;
         }
 
-        target.sendMessage(ACCEPTER_MESSAGE_PREFIX + sender.getName() + ACCEPTER_MESSAGE_MIDDLE + commandLabel + ACCEPTER_MESSAGE_SUFFIX);
+        accepter.sendMessage(ACCEPTER_MESSAGE_PREFIX + sender.getName() + ACCEPTER_MESSAGE_MIDDLE + commandLabel + ACCEPTER_MESSAGE_SUFFIX);
 
-        Player teleportee = here ? target : sender;
-        Player destination = here ? sender : target;
+        Player teleportee = here ? accepter : sender;
+        Player destination = here ? sender : accepter;
 
-        TpRequestTracker.instance().trackRequest(sender, target, teleportee, destination);
+        TpRequestTracker.instance().trackRequest(sender, accepter, teleportee, destination);
         return true;
     }
 

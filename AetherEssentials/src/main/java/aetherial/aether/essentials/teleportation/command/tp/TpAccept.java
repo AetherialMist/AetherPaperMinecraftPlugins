@@ -10,18 +10,14 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * {@value #DESCRIPTION}
- */
 @CommandTag(
     name = TpRegistration.TP_ACCEPT,
     usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.TP_ACCEPT,
-    desc = TpAccept.DESCRIPTION,
+    desc = "Accept the most recent pending teleport request",
     permission = TpAccept.PERMISSION
 )
 public class TpAccept extends CommandWrapper {
 
-    public static final String DESCRIPTION = "Accept the most recent pending teleport request";
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_ACCEPT;
 
     @Override
