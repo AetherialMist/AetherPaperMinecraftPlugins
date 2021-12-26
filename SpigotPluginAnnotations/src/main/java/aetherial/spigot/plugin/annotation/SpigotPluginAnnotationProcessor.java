@@ -363,7 +363,7 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
     /**
      * Process a collection of ChildPermissions resulting from a repeated Annotation
      *
-     * @param element Th Element owning the ChildPermission
+     * @param element The Element owning the ChildPermission
      */
     private void processChildPermissionsAnnotation(Element element) {
         Optional<ChildPermissions> optional = Optional.ofNullable(element.getAnnotation(ChildPermissions.class));
