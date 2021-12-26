@@ -75,6 +75,7 @@ public class Common {
         return Optional.of(player);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean verifyUpToNumberOfArgs(CommandSender commandSender, String[] args, int limit) {
         if (args.length > limit) {
             commandSender.sendMessage(tooManyArgsPrefix);

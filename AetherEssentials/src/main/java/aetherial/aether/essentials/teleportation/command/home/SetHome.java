@@ -5,7 +5,6 @@ import aetherial.aether.essentials.Common;
 import aetherial.aether.essentials.teleportation.TpRegistration;
 import aetherial.aether.essentials.wrapper.CommandWrapper;
 import aetherial.spigot.plugin.annotation.command.CommandTag;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -10,6 +10,10 @@ import java.io.Reader;
 
 public class Outside {
 
+    private Outside() {
+
+    }
+
     public static <T> T read(File file, Class<T> type) {
         T data = null;
         if (file.exists()) {

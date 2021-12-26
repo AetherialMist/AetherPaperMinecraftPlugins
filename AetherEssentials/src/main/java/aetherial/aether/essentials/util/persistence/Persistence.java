@@ -14,8 +14,6 @@ import org.yaml.snakeyaml.nodes.Tag;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
 
 public class Persistence {
@@ -302,118 +300,6 @@ public class Persistence {
             log.error("Failed to delete file: {}", file.getPath());
             return false;
         }
-    }
-
-
-    /**
-     * Read data from a Yaml file.
-     *
-     * @param subfolder The subfolder in this plugin's dataFolder
-     * @param filename  The file name in the subfolder without the extension
-     * @return The data stored in the file
-     * @deprecated (Use the new readYamlFile methods)
-     */
-    @Deprecated(since = "1.0.0-SNAPSHOT")
-    public Optional<Map<String, Object>> readYamlFile(String subfolder, String filename) {
-        Optional<File> optional = getYamlFile(subfolder, filename, false);
-        if (optional.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return readYamlFile(optional.get());
-    }
-
-    /**
-     * Read data from a Yaml file.
-     *
-     * @param file The file to read from
-     * @return The data stored in the file
-     * @deprecated (Use the new readYamlFile methods)
-     */
-    @Deprecated(since = "1.0.0-SNAPSHOT")
-    public Optional<Map<String, Object>> readYamlFile(File file) {
-        if (!file.exists()) {
-            String message = String.format("File does not exist: %s", file.getPath());
-            log.error(message);
-        }
-
-        Yaml yaml = new Yaml();
-        Map<String, Object> data = null;
-        try {
-            data = yaml.load(new FileReader(file));
-        } catch (FileNotFoundException e) {
-            String message = String.format("Failed to read from file: %s", file.getPath());
-            log.error(message);
-        }
-        return Optional.ofNullable(data);
-    }
-
-    /**
-     * Writes to a Yaml file.
-     *
-     * @param subfolder The subfolder in this plugin's dataFolder
-     * @param filename  The file name in the subfolder without the extension
-     * @param data      The Yaml data to write
-     * @param create    True to create the file if it does not already exist, otherwise false
-     * @return True if the file was written to, otherwise false
-     * @deprecated (Use the new writeYamlFile methods)
-     */
-    @Deprecated(since = "1.0.0-SNAPSHOT")
-    public boolean writeFileYaml(String subfolder, String filename, Map<String, ?> data, boolean create) {
-        Optional<File> optional = getYamlFile(subfolder, filename, create);
-        if (optional.isEmpty()) {
-            return false;
-        }
-        File file = optional.get();
-
-        try (Writer writer = new FileWriter(file)) {
-            Yaml yaml = new Yaml();
-            String raw = yaml.dumpAs(data, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
-            writer.write(raw);
-            writer.flush();
-        } catch (IOException e) {
-            String message = String.format("Failed to write to file: %s", file.getPath());
-            log.error(message);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Get a Yaml file from a subfolder.
-     *
-     * @param subfolder The subfolder in this plugin's dataFolder
-     * @param filename  The name of the file without the extension
-     * @param create    True to create the file if it does not exist, otherwise false
-     * @return The Yaml file
-     * @deprecated (Use the new getFile methods)
-     */
-    @Deprecated(since = "1.0.0-SNAPSHOT")
-    public Optional<File> getYamlFile(String subfolder, String filename, boolean create) {
-        File file = new File(getDataSubfolder(subfolder), filename + YAML_FILE_EXT);
-
-        if (!file.exists() && create) {
-            String message = String.format("Failed to create file: %s", file.getPath());
-            Path path = file.toPath();
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                log.error(message);
-                return Optional.empty();
-            }
-            file = new File(path.toUri());
-            if (!file.exists()) {
-                log.error(message);
-                return Optional.empty();
-            }
-        } else if (!file.exists()) {
-            String message = String.format("Files does not exist: %s", file.getPath());
-            log.error(message);
-            return Optional.empty();
-        }
-
-        return Optional.of(file);
     }
 
 }

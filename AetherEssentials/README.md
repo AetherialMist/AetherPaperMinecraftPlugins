@@ -2,8 +2,8 @@
 
 _Inspired by EssentialsX_
 
-EssentialsX has been a community standard in plugin choice for its features. Most players are accustomed to commands
-such as `/tpa`, `/home`, and `/back`
+EssentialsX has been a community standard in plugin choice for its features. Most players are accustomed to using
+commands such as `/tpa`, `/home`, and `/back`
 to name a few.
 
 Overtime, it has become apparent in EssentialsX that some commands and permissions are unstable. This plugin seeks to

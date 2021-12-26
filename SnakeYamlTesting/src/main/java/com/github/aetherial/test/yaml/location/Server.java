@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public class Server {
 
+    @SuppressWarnings("unused")
     public World getWorld(UUID uid) {
         return new World();
     }
