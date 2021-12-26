@@ -3,8 +3,9 @@ package aetherial.spigot.plugin.annotation.plugin;
 import java.lang.annotation.*;
 
 /**
- * Defines when the plugin should load.
- * On Startup or Post world creation.
+ * Defines when the plugin should load: On Startup or Post world creation.
+ * <p>
+ * If used, MUST appear on same Element as {@link Plugin}
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

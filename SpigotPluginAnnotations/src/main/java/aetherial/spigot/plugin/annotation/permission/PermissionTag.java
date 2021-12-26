@@ -28,6 +28,5 @@ public @interface PermissionTag {
     String name();
     String desc();
     PermissionDefault defaultValue() default PermissionDefault.OP;
-    ChildPermission[] children() default {};
 
 }

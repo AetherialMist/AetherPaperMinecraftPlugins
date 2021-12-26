@@ -3,13 +3,11 @@ package aetherial.spigot.plugin.annotation;
 import aetherial.spigot.plugin.annotation.command.CommandTag;
 import aetherial.spigot.plugin.annotation.command.CommandsTag;
 import aetherial.spigot.plugin.annotation.permission.ChildPermission;
+import aetherial.spigot.plugin.annotation.permission.ChildPermissions;
 import aetherial.spigot.plugin.annotation.permission.PermissionTag;
 import aetherial.spigot.plugin.annotation.permission.PermissionsTag;
 import aetherial.spigot.plugin.annotation.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -25,14 +23,13 @@ import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SupportedAnnotationTypes("aetherial.spigot.plugin.annotation.*")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
-
-    private boolean foundMainClass = false;
 
     private static final String OUTPUT_FILE = "plugin.yml";
 
@@ -61,6 +58,10 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
     private static final Map<String, Object> data = new ConcurrentHashMap<>();
     private static final Map<String, Map<String, Object>> commandsBlock = new ConcurrentHashMap<>();
     private static final Map<String, Map<String, Object>> permissionsBlock = new ConcurrentHashMap<>();
+    private static final List<ChildPermission> childPermissions = Collections.synchronizedList(new ArrayList<>());
+
+    private boolean foundMainClass = false;
+    private Element pluginClass = null;
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -75,20 +76,54 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
         }
 
         if (!lastRound) {
+            // Do not claim any annotations. This allows them to be available on the last round
             return true;
         }
 
+        finalizeData();
+        return writePluginYaml();
+    }
+
+    /**
+     * Final steps before writing the plugin.yml file
+     */
+    private void finalizeData() {
+        // Process the Plugin annotated Class
+        processPluginAnnotation(pluginClass);
+
+        // Add commands, if they exist
         if (!commandsBlock.isEmpty()) {
             data.put(COMMANDS, commandsBlock);
         }
+
+        // Add child permissions, if they exist
+        for (ChildPermission childPermission : childPermissions) {
+            String parent = childPermission.parent();
+            if (!permissionsBlock.containsKey(parent)) {
+                raiseError("Invalid parent for child permission: " + parent);
+                continue;
+            }
+            Map<String, Object> parentBlock = permissionsBlock.get(parent);
+            //noinspection unchecked, Forcing this value to be a Map
+            Map<String, Object> childrenBlock = (Map<String, Object>) parentBlock.computeIfAbsent(CHILDREN, key -> new HashMap<>());
+            childrenBlock.put(childPermission.name(), childPermission.inherit());
+        }
+
+        // Add permissions, if they exist
         if (!permissionsBlock.isEmpty()) {
             data.put(PERMISSIONS, permissionsBlock);
         }
+    }
 
+    /**
+     * Write the plugin.yml file
+     *
+     * @return True if the file was created, otherwise false
+     */
+    private boolean writePluginYaml() {
         try (Writer writer = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", OUTPUT_FILE)
             .openWriter()) {
-            Yaml yaml = new Yaml();
-            String raw = yaml.dumpAs(data, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+            String raw = buildYamlFile();
             writer.write(raw);
             writer.flush();
         } catch (IOException e) {
@@ -96,10 +131,31 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
             raiseError("Failed to create plugin.yml file");
             return false;
         }
-
         return true;
     }
 
+    /**
+     * Builds the Yaml file in the "pretty" order
+     *
+     * @return The contents for the plugin.yml file
+     */
+    private String buildYamlFile() {
+        PluginYamlBuilder builder = new PluginYamlBuilder(data);
+        builder.append(MAIN).append(NAME).append(VERSION).append(DESCRIPTION).append(API_VERSION)
+            .append(LOAD).append(AUTHOR).append(AUTHORS).append(WEBSITE).append(DEPEND)
+            .append(PREFIX).append(LOAD_BEFORE).append(COMMANDS).append(PERMISSIONS);
+
+        return builder.getRawYamlContents();
+    }
+
+    /**
+     * Process the annotated Class
+     * <p>
+     * May save or skip the annotation to be processed at a later time
+     *
+     * @param annotatedClass The annotated Class
+     * @param annotation     The Annotation
+     */
     private void processAnnotation(Element annotatedClass, TypeElement annotation) {
         String annotationName = annotation.asType().toString();
         annotationName = annotationName.substring(annotationName.lastIndexOf('.') + 1);
@@ -109,8 +165,9 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
                 raiseError("Already found a main class annotated with @Plugin! Aborting, more than one class with @Plugin");
                 return;
             }
+            // Will be processed at the end. This makes sure that all other possible annotates are discovered on the same Class
             foundMainClass = true;
-            processPluginAnnotation(annotatedClass);
+            pluginClass = annotatedClass;
         } else if (annotationName.equals(CommandsTag.class.getSimpleName())) {
             processCommandsAnnotation(annotatedClass);
         } else if (annotationName.equals(CommandTag.class.getSimpleName())) {
@@ -119,144 +176,102 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
             processPermissionsAnnotation(annotatedClass);
         } else if (annotationName.equals(PermissionTag.class.getSimpleName())) {
             processPermissionAnnotation(annotatedClass);
+        } else if (annotationName.equals(ChildPermissions.class.getSimpleName())) {
+            processChildPermissionsAnnotation(annotatedClass);
+        } else if (annotationName.equals(ChildPermission.class.getSimpleName())) {
+            processChildPermissionAnnotation(annotatedClass);
         }
     }
 
-    private void processPluginAnnotation(Element mainClassElement) {
-        TypeMirror javaPluginMirror = this.processingEnv.getElementUtils().getTypeElement(JavaPlugin.class.getName()).asType();
-        if (!(mainClassElement instanceof TypeElement mainClass)) {
-            raiseError("@Plugin is not on a Class!");
-            return;
-        } else if (!this.isSubtype(mainClass.asType(), javaPluginMirror)) {
-            raiseError("@Plugin is not on a JavaPlugin class!");
-            return;
-        } else if (!(mainClass.getEnclosingElement() instanceof PackageElement)) {
-            raiseError("@Plugin is not on a top level class!");
-            return;
-        }
-        Set<Modifier> modifiers = mainClass.getModifiers();
-        if (modifiers.contains(Modifier.ABSTRACT)) {
-            raiseError("@Plugin cannot be on an Abstract class!");
-            return;
-        } else if (modifiers.contains(Modifier.STATIC)) {
-            raiseError("@Plugin cannot be on a Static class!");
+    /**
+     * Processes the Plugin Annotation and all known Annotations that may appear
+     * on the same Element,
+     *
+     * @param element The Element annotated with Plugin
+     */
+    private void processPluginAnnotation(Element element) {
+        // Validate the owning Element of the Plugin Annotation
+        if (!isPluginAnnotationValid(element)) {
             return;
         }
+        // Type validated in above check
+        TypeElement mainClass = (TypeElement) element;
 
-
-        Plugin plugin = mainClassElement.getAnnotation(Plugin.class);
+        // Plugin fields
+        Plugin plugin = mainClass.getAnnotation(Plugin.class);
         data.put(MAIN, mainClass.getQualifiedName().toString());
         data.put(NAME, plugin.name());
         data.put(VERSION, plugin.version());
 
-        processDescriptionAnnotation(mainClassElement);
-        processApiVersionAnnotation(mainClassElement);
-        processLoadAnnotation(mainClassElement);
-        processAuthorAnnotation(mainClassElement);
-        processAuthorsAnnotation(mainClassElement);
-        processWebsiteAnnotation(mainClassElement);
-        processDependAnnotation(mainClassElement);
-        processPrefixAnnotation(mainClassElement);
-        processSoftDependAnnotation(mainClassElement);
-        processLoadBeforeAnnotation(mainClassElement);
+        // Annotations that may appear on the Plugin annotated Class
+        processAnnotation(mainClass, Description.class, DESCRIPTION, Description::value);
+        processAnnotation(mainClass, ApiVersion.class, API_VERSION, ApiVersion::value);
+        processAnnotation(mainClass, Load.class, LOAD, ann -> ann.value().getLoadType());
+        processAnnotation(mainClass, Author.class, AUTHOR, Author::value);
+        processAnnotation(mainClass, Authors.class, AUTHORS, Authors::value);
+        processAnnotation(mainClass, Website.class, WEBSITE, Website::value);
+        processAnnotation(mainClass, Depend.class, DEPEND, Depend::value);
+        processAnnotation(mainClass, Prefix.class, PREFIX, Prefix::value);
+        processAnnotation(mainClass, SoftDepend.class, SOFT_DEPEND, SoftDepend::value);
+        processAnnotation(mainClass, LoadBefore.class, LOAD_BEFORE, LoadBefore::value);
     }
 
-    private void processDescriptionAnnotation(Element mainClassElement) {
-        Optional<Description> optional = Optional.ofNullable(mainClassElement.getAnnotation(Description.class));
+    /**
+     * Validates that the Element follows all rules to be annotated with Plugin
+     *
+     * @param element The Element with the Plugin Annotation
+     * @return True if all rules are followed, otherwise false
+     */
+    private boolean isPluginAnnotationValid(Element element) {
+        // Validate inheritance
+        TypeMirror javaPluginMirror = this.processingEnv.getElementUtils().getTypeElement(JavaPlugin.class.getName())
+            .asType();
+        if (!(element instanceof TypeElement typeElement)) {
+            raiseError("@Plugin is not on a Class!");
+            return false;
+        } else if (!this.processingEnv.getTypeUtils().isSubtype(typeElement.asType(), javaPluginMirror)) {
+            raiseError("@Plugin is not on a JavaPlugin class!");
+            return false;
+        } else if (!(typeElement.getEnclosingElement() instanceof PackageElement)) {
+            raiseError("@Plugin is not on a top level class!");
+            return false;
+        }
+        // Validate Class modifiers
+        Set<Modifier> modifiers = typeElement.getModifiers();
+        if (modifiers.contains(Modifier.ABSTRACT)) {
+            raiseError("@Plugin cannot be on an Abstract class!");
+            return false;
+        } else if (modifiers.contains(Modifier.STATIC)) {
+            raiseError("@Plugin cannot be on a Static class!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Process a simple Annotation to be put in the plugin.yml file
+     *
+     * @param element        The Element owning the Annotation
+     * @param annotationType The Annotation type to process
+     * @param tag            The key for the top level YAML data
+     * @param handler        Method used to get the data for the key
+     */
+    private <A extends Annotation> void processAnnotation(Element element, Class<A> annotationType, String tag, YamlValueHandler<A> handler) {
+        Optional<A> optional = Optional.ofNullable(element.getAnnotation(annotationType));
         if (optional.isEmpty()) {
             return;
         }
-        Description annotation = optional.get();
-        data.put(DESCRIPTION, annotation.value());
+        A annotation = optional.get();
+        data.put(tag, handler.getYamlValue(annotation));
     }
 
-    private void processApiVersionAnnotation(Element mainClassElement) {
-        Optional<ApiVersion> optional = Optional.ofNullable(mainClassElement.getAnnotation(ApiVersion.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        ApiVersion annotation = optional.get();
-        data.put(API_VERSION, annotation.value());
-    }
-
-    private void processLoadAnnotation(Element mainClassElement) {
-        Optional<Load> optional = Optional.ofNullable(mainClassElement.getAnnotation(Load.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Load annotation = optional.get();
-        data.put(LOAD, annotation.value().getLoadType());
-    }
-
-    private void processAuthorAnnotation(Element mainClassElement) {
-        Optional<Author> optional = Optional.ofNullable(mainClassElement.getAnnotation(Author.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Author annotation = optional.get();
-        data.put(AUTHOR, annotation.value());
-    }
-
-    private void processAuthorsAnnotation(Element mainClassElement) {
-        Optional<Authors> optional = Optional.ofNullable(mainClassElement.getAnnotation(Authors.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Authors annotation = optional.get();
-        data.put(AUTHORS, annotation.value());
-    }
-
-    private void processWebsiteAnnotation(Element mainClassElement) {
-        Optional<Website> optional = Optional.ofNullable(mainClassElement.getAnnotation(Website.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Website annotation = optional.get();
-        data.put(WEBSITE, annotation.value());
-    }
-
-    private void processDependAnnotation(Element mainClassElement) {
-        Optional<Depend> optional = Optional.ofNullable(mainClassElement.getAnnotation(Depend.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Depend annotation = optional.get();
-        data.put(DEPEND, annotation.value());
-    }
-
-    private void processPrefixAnnotation(Element mainClassElement) {
-        Optional<Prefix> optional = Optional.ofNullable(mainClassElement.getAnnotation(Prefix.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Prefix annotation = optional.get();
-        data.put(PREFIX, annotation.value());
-    }
-
-    private void processSoftDependAnnotation(Element mainClassElement) {
-        Optional<SoftDepend> optional = Optional.ofNullable(mainClassElement.getAnnotation(SoftDepend.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        SoftDepend annotation = optional.get();
-        data.put(SOFT_DEPEND, annotation.value());
-    }
-
-    private void processLoadBeforeAnnotation(Element mainClassElement) {
-        Optional<LoadBefore> optional = Optional.ofNullable(mainClassElement.getAnnotation(LoadBefore.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        LoadBefore annotation = optional.get();
-        data.put(LOAD_BEFORE, annotation.value());
-    }
-
-    private boolean isSubtype(TypeMirror child, TypeMirror parent) {
-        return this.processingEnv.getTypeUtils().isSubtype(child, parent);
-    }
-
-    private void processCommandsAnnotation(Element classElement) {
-        Optional<CommandsTag> optional = Optional.ofNullable(classElement.getAnnotation(CommandsTag.class));
+    /**
+     * Process a collection of CommandTags resulting from a repeated Annotation
+     *
+     * @param element The Element owning the CommandsTag
+     */
+    private void processCommandsAnnotation(Element element) {
+        Optional<CommandsTag> optional = Optional.ofNullable(element.getAnnotation(CommandsTag.class));
         if (optional.isEmpty()) {
             return;
         }
@@ -265,20 +280,32 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void processCommandAnnotation(Element classElement) {
-        Optional<CommandTag> optional = Optional.ofNullable(classElement.getAnnotation(CommandTag.class));
+    /**
+     * Process a single CommandTag
+     *
+     * @param element The Element owning the CommandTag
+     */
+    private void processCommandAnnotation(Element element) {
+        Optional<CommandTag> optional = Optional.ofNullable(element.getAnnotation(CommandTag.class));
         if (optional.isEmpty()) {
             return;
         }
         processCommand(optional.get());
     }
 
+    /**
+     * Process a CommandTag
+     *
+     * @param commandTag The Annotation to process
+     */
     private void processCommand(CommandTag commandTag) {
         Map<String, Object> block = new HashMap<>();
+
         // Required
         block.put(DESCRIPTION, commandTag.desc());
         block.put(USAGE, commandTag.usage());
         block.put(PERMISSION, commandTag.permission());
+
         // Optional
         if (commandTag.aliases().length > 0) {
             block.put(ALIASES, commandTag.aliases());
@@ -286,11 +313,17 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
         if (!commandTag.permissionMessage().equals("")) {
             block.put(PERMISSION_MESSAGE, commandTag.permissionMessage());
         }
+
         commandsBlock.put(commandTag.name(), block);
     }
 
-    private void processPermissionsAnnotation(Element classElement) {
-        Optional<PermissionsTag> optional = Optional.ofNullable(classElement.getAnnotation(PermissionsTag.class));
+    /**
+     * Process a collection of PermissionTags resulting from a repeated Annotation
+     *
+     * @param element The Element owning the PermissionsTag
+     */
+    private void processPermissionsAnnotation(Element element) {
+        Optional<PermissionsTag> optional = Optional.ofNullable(element.getAnnotation(PermissionsTag.class));
         if (optional.isEmpty()) {
             return;
         }
@@ -299,33 +332,78 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void processPermissionAnnotation(Element classElement) {
-        Optional<PermissionTag> optional = Optional.ofNullable(classElement.getAnnotation(PermissionTag.class));
+    /**
+     * Process a single PermissionTag
+     *
+     * @param element The Element owning the PermissionTag
+     */
+    private void processPermissionAnnotation(Element element) {
+        Optional<PermissionTag> optional = Optional.ofNullable(element.getAnnotation(PermissionTag.class));
         if (optional.isEmpty()) {
             return;
         }
         processPermission(optional.get());
     }
 
+    /**
+     * Process a PermissionTag
+     *
+     * @param permissionTag The Annotation to process
+     */
     private void processPermission(PermissionTag permissionTag) {
         Map<String, Object> block = new HashMap<>();
-        Map<String, Object> childrenBlock = new HashMap<>();
+
+        // Required fields
         block.put(DESCRIPTION, permissionTag.desc());
         block.put(DEFAULT, permissionTag.defaultValue().toString());
-
-        if (permissionTag.children().length > 0) {
-            for (ChildPermission child : permissionTag.children()) {
-                childrenBlock.put(child.name(), child.inherit());
-            }
-            block.put(CHILDREN, childrenBlock);
-        }
 
         permissionsBlock.put(permissionTag.name(), block);
     }
 
+    /**
+     * Process a collection of ChildPermissions resulting from a repeated Annotation
+     *
+     * @param element Th Element owning the ChildPermission
+     */
+    private void processChildPermissionsAnnotation(Element element) {
+        Optional<ChildPermissions> optional = Optional.ofNullable(element.getAnnotation(ChildPermissions.class));
+        if (optional.isEmpty()) {
+            return;
+        }
+        for (ChildPermission permissionTag : optional.get().value()) {
+            processChildPermission(permissionTag);
+        }
+    }
+
+    /**
+     * Process a single ChildPermission
+     *
+     * @param element The Element owning the ChildPermission
+     */
+    private void processChildPermissionAnnotation(Element element) {
+        Optional<ChildPermission> optional = Optional.ofNullable(element.getAnnotation(ChildPermission.class));
+        if (optional.isEmpty()) {
+            return;
+        }
+        processChildPermission(optional.get());
+    }
+
+    /**
+     * Process a ChildPermission
+     *
+     * @param childPermission The Annotation to process
+     */
+    private void processChildPermission(ChildPermission childPermission) {
+        childPermissions.add(childPermission);
+    }
+
+    /**
+     * Used to fail the annotation processing
+     *
+     * @param message The message to fail with
+     */
     private void raiseError(String message) {
-        this.processingEnv.getMessager()
-            .printMessage(Diagnostic.Kind.ERROR, message);
+        this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
     }
 
 }

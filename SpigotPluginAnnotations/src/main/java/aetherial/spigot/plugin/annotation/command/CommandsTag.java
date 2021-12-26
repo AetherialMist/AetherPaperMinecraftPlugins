@@ -4,6 +4,8 @@ import java.lang.annotation.*;
 
 /**
  * Container for repeatable {@link CommandTag}.
+ * <p>
+ * Should NOT be used directly.
  */
 @Documented
 @Target(ElementType.TYPE)
