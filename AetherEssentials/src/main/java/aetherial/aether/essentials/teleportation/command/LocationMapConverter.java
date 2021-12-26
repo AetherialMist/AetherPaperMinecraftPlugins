@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class LocationMapConverter {
 
-    public static LocationMapConverter instance;
+    private static LocationMapConverter instance;
 
     public static LocationMapConverter getInstance() {
         if (instance == null) {

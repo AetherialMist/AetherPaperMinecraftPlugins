@@ -29,8 +29,8 @@ public class Warps extends CommandWrapper {
     private final String messagePrefix = applyDefaultMessageColor("Warp locations: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, label);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalSender.isEmpty() || !Common.verifyNoArgs(commandSender, args)) {
             return false;
         }

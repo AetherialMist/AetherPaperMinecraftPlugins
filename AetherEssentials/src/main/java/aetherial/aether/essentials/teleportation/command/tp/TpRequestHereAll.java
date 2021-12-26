@@ -31,8 +31,8 @@ public class TpRequestHereAll extends CommandWrapper {
     private final String senderMessageSuffix = applyDefaultMessageColor(" request sent to all players");
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalPlayer.isEmpty() || !Common.verifyNoArgs(commandSender, args)) {
             return false;
         }
@@ -50,10 +50,10 @@ public class TpRequestHereAll extends CommandWrapper {
             // Player#sendMessage(String) is deprecated, but Player implements CommandSender, which does support sendMessage(String)
             // Player#sendMessage(String) is most likely being removed since the super type already has this method.
             //NOSONAR java:S1874
-            accepter.sendMessage(ACCEPTER_MESSAGE_PREFIX + sender.getName() + ACCEPTER_MESSAGE_MIDDLE + label + ACCEPTER_MESSAGE_SUFFIX);
+            accepter.sendMessage(ACCEPTER_MESSAGE_PREFIX + sender.getName() + ACCEPTER_MESSAGE_MIDDLE + commandLabel + ACCEPTER_MESSAGE_SUFFIX);
             TpRequestTracker.instance().trackRequest(sender, accepter, accepter, sender);
         }
-        sender.sendMessage(senderMessagePrefix + label + senderMessageSuffix);
+        sender.sendMessage(senderMessagePrefix + commandLabel + senderMessageSuffix);
 
         return true;
     }

@@ -30,9 +30,9 @@ public class WarpInfo extends CommandWrapper {
     private final String warpNotFound = applyDefaultMessageColor("Warp not found: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
         //noinspection DuplicatedCode Can't meaninfully not duplicate this code
-        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, label);
+        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalSender.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
             return false;
         }
@@ -47,7 +47,7 @@ public class WarpInfo extends CommandWrapper {
         Location location = optionalLocation.get();
 
         String world = location.getWorld().getName();
-        String message = String.format("Warp: %s, World: %s, X: %d, Y: %d, Z: %d",
+        String message = String.format("Home: %s, World: %s, X: %d, Y: %d, Z: %d",
             warpName, world, (int) location.getX(), (int) location.getY(), (int) location.getZ());
         sender.sendMessage(message);
 

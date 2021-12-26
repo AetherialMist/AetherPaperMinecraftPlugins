@@ -13,6 +13,7 @@
     <modules>
         <module>SpigotPluginAnnotations</module>
         <module>AetherEssentials</module>
+        <module>SnakeYamlTesting</module>
     </modules>
 
     <properties>
@@ -31,29 +32,70 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Aether Dependencies -->
+            <dependency>
+                <groupId>com.github.aetherial</groupId>
+                <artifactId>spigot-plugin-annotations</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--
+            Minecraft API
+            Docs: https://papermc.io/javadocs/paper/1.18/index.html
+            -->
             <dependency>
                 <groupId>io.papermc.paper</groupId>
                 <artifactId>paper-api</artifactId>
                 <version>1.18.1-R0.1-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+
+            <!--
+            YAML File Handler
+            Docs: https://bitbucket.org/snakeyaml/snakeyaml/wiki/Documentation
+            Maven: https://mvnrepository.com/artifact/org.yaml/snakeyaml
+            -->
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>1.29</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+
+            <!--
+            Code Generation
+            Maven: https://mvnrepository.com/artifact/org.projectlombok/lombok
+            -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.22</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- Testing Dependencies -->
             <dependency>
-                <groupId>com.github.aetherial</groupId>
-                <artifactId>spigot-plugin-annotations</artifactId>
-                <version>${revision}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.8.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.8.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>4.2.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>4.2.0</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -61,11 +103,21 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--
+                Build Jars
+                Docs: https://maven.apache.org/plugins/maven-jar-plugin/
+                Maven: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
+                <!--
+                Java Compiler
+                Docs: https://maven.apache.org/plugins/maven-compiler-plugin/
+                Maven: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

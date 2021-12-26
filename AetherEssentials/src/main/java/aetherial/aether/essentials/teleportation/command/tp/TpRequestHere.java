@@ -22,8 +22,8 @@ public class TpRequestHere extends CommandWrapper {
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_REQUEST_HERE;
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        return TpRequest.sendRequest(commandSender, label, args, true);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        return TpRequest.sendRequest(commandSender, commandLabel, args, true);
     }
 
     @Override

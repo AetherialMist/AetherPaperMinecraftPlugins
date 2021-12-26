@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static aetherial.aether.essentials.chat.ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE;
 import static aetherial.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
 
 @CommandTag(
@@ -29,12 +30,12 @@ public class Warp extends CommandWrapper implements TabCompleteWrapper {
 
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.WARP;
 
-    private final String warpDoesNotExistPrefix = applyDefaultMessageColor("Warp does not exist: ");
+    private final String warpDoesNotExistPrefix = applyDefaultMessageColor("Warp does not exist: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
         //noinspection DuplicatedCode Can't meaninfully not duplicate this code
-        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, label);
+        Optional<Player> optionalSender = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalSender.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
             return false;
         }
@@ -59,6 +60,11 @@ public class Warp extends CommandWrapper implements TabCompleteWrapper {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
+        if (optionalPlayer.isEmpty()){
+            return Collections.emptyList();
+        }
+
         return args.length == 1 ? WarpStorage.getInstance().onTabComplete(args[0]) : Collections.emptyList();
     }
 

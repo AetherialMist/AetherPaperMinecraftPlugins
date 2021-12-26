@@ -21,8 +21,8 @@ public class TpAccept extends CommandWrapper {
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.TP_ACCEPT;
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        TpRequest.replyToRequest(commandSender, label, args, true);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        TpRequest.replyToRequest(commandSender, commandLabel, args, true);
 
         return true;
     }

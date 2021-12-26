@@ -10,26 +10,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static aetherial.aether.essentials.chat.ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE;
 import static aetherial.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
 import static aetherial.aether.essentials.teleportation.command.home.Home.DEFAULT_HOME_LABEL;
 
 @CommandTag(
-    name = TpRegistration.SET_HOME,
-    usage = "/" + TpRegistration.SET_HOME + " [string|nothing]",
-    desc = "Set your home",
-    permission = SetHome.PERMISSION
+    name = TpRegistration.HOME_INFO,
+    desc = "Get the location of a home",
+    usage = "/" + TpRegistration.HOME_INFO + " [string|nothing]",
+    permission = HomeInfo.PERMISSION
 )
-public class SetHome extends CommandWrapper {
+public class HomeInfo extends CommandWrapper {
 
-    public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.SET_HOME;
+    public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.HOME_INFO;
 
-    private final String homeCreatedPrefix = applyDefaultMessageColor("Home set: " + DEFAULT_PLAYER_COLOR_CODE);
-    private final String homeCreateFailedPrefix = applyDefaultMessageColor("Failed to set home: " + DEFAULT_PLAYER_COLOR_CODE);
+    private final String invalidHomePrefix = applyDefaultMessageColor("Invalid home: ");
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
@@ -41,16 +38,24 @@ public class SetHome extends CommandWrapper {
         Player player = optionalPlayer.get();
         String homeLabel = args.length > 0 ? args[0] : DEFAULT_HOME_LABEL;
 
-        boolean created = HomeStorage.getInstance().setHome(player, homeLabel).isPresent();
-        String message = created ? homeCreatedPrefix : homeCreateFailedPrefix;
-        commandSender.sendMessage(message + commandLabel);
+        Optional<Location> optionalLocation = HomeStorage.getInstance().getHome(player, homeLabel);
+        if (optionalLocation.isEmpty()) {
+            player.sendMessage(invalidHomePrefix + homeLabel);
+            return true;
+        }
+        Location location = optionalLocation.get();
+
+        String world = location.getWorld().getName();
+        String message = String.format("Warp: %s, World: %s, X: %d, Y: %d, Z: %d",
+            homeLabel, world, (int) location.getX(), (int) location.getY(), (int) location.getZ());
+        player.sendMessage(message);
 
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String commandLabel, String[] strings) {
-        return Collections.emptyList();
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        return HomeStorage.getInstance().verifyIsPlayerOnTabComplete(commandSender, commandLabel, args);
     }
 
 }

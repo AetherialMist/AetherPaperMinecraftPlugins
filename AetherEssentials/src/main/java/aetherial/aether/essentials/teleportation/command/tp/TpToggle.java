@@ -27,8 +27,8 @@ public class TpToggle extends CommandWrapper {
     private final String failedToggle = applyColor("Failed to toggle auto-deny");
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalPlayer.isEmpty() || !Common.verifyNoArgs(commandSender, args)) {
             return false;
         }

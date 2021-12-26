@@ -31,8 +31,8 @@ public class TpCancel extends CommandWrapper {
     private final String senderMessagePrefix = applyDefaultMessageColor("You canceled your request to: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalPlayer.isEmpty() || !Common.verifyNoArgs(commandSender, args)) {
             return false;
         }

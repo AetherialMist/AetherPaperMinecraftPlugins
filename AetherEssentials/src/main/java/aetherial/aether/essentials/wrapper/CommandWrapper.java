@@ -14,11 +14,11 @@ public abstract class CommandWrapper implements CommandExecutor, TabCompleteWrap
     /**
      * @param commandSender The source that sent the command
      * @param command       What the command is "/tpa"
-     * @param label         The first word of the command excluding args
+     * @param commandLabel         The first word of the command excluding args
      * @param args          The arguments of the command
      * @return True if the command was successful, otherwise false
      */
     @SuppressWarnings({"java:S3038", "NullableProblems"})
-    public abstract boolean onCommand(CommandSender commandSender, Command command, String label, String[] args);
+    public abstract boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args);
 
 }

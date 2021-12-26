@@ -2,7 +2,7 @@ package aetherial.aether.essentials;
 
 import aetherial.aether.essentials.chat.ChatRegistration;
 import aetherial.aether.essentials.teleportation.TpRegistration;
-import aetherial.aether.essentials.util.Persistence;
+import aetherial.aether.essentials.util.persistence.Persistence;
 import aetherial.spigot.plugin.annotation.permission.PermissionTag;
 import aetherial.spigot.plugin.annotation.plugin.ApiVersion;
 import aetherial.spigot.plugin.annotation.plugin.Author;
@@ -37,6 +37,9 @@ public class AetherEssentials extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        // SnakeYaml breaks if you don't set the ClassLoader...
+        Thread.currentThread().setContextClassLoader(this.getClassLoader());
+
         Common.init(this);
         Persistence.init(this);
         tpRegistration = new TpRegistration(this);

@@ -31,9 +31,9 @@ public class TpDeny extends CommandWrapper {
     // This should always return true
     @SuppressWarnings("java:S3516")
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
         // Get the sender of the request (not this command's sender)
-        Optional<Player> optional = TpRequest.replyToRequest(commandSender, label, args, false);
+        Optional<Player> optional = TpRequest.replyToRequest(commandSender, commandLabel, args, false);
         if (optional.isEmpty()) {
             return true;
         }

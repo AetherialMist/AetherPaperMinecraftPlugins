@@ -1,6 +1,5 @@
 package aetherial.aether.essentials;
 
-import aetherial.aether.essentials.chat.ChatColorFormatter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,6 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static aetherial.aether.essentials.chat.ChatColorFormatter.DEFAULT_COMMAND_COLOR_CODE;
+import static aetherial.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
 
 public class Common {
 
@@ -22,17 +24,15 @@ public class Common {
     private static String noArgsExpected;
     private static String exactlyOneArgExpected;
     private static String notAnOnlinePlayer;
+    private static String tooManyArgsPrefix;
 
     public static void init(JavaPlugin plugin) {
         Common.plugin = plugin;
-        ChatColorFormatter colorFormatter = ChatColorFormatter.getInstance();
-
-        String textColor = ChatColorFormatter.DEFAULT_MESSAGE_COLOR_CODE;
-        String commandColor = ChatColorFormatter.DEFAULT_COMMAND_COLOR_CODE;
-        onlyPlayersCanUseCommandPrefix = colorFormatter.applyColorFormat(textColor + "Only players can use " + commandColor + AetherEssentials.COMMAND_PREFIX);
-        noArgsExpected = colorFormatter.applyColorFormat(textColor + "No arguments expected");
-        exactlyOneArgExpected = colorFormatter.applyColorFormat(textColor + "Exactly one argument expected");
-        notAnOnlinePlayer = colorFormatter.applyColorFormat(textColor + "Not a valid online player");
+        onlyPlayersCanUseCommandPrefix = applyDefaultMessageColor("Only players can use " + DEFAULT_COMMAND_COLOR_CODE + AetherEssentials.COMMAND_PREFIX);
+        noArgsExpected = applyDefaultMessageColor("No arguments expected");
+        exactlyOneArgExpected = applyDefaultMessageColor("Exactly one argument expected");
+        notAnOnlinePlayer = applyDefaultMessageColor("Not a valid online player");
+        tooManyArgsPrefix = applyDefaultMessageColor("To many arguments. Expected at most: " + DEFAULT_COMMAND_COLOR_CODE);
     }
 
     public static List<Player> getOnlinePlayers() {
@@ -73,6 +73,14 @@ public class Common {
             return Optional.empty();
         }
         return Optional.of(player);
+    }
+
+    public static boolean verifyUpToNumberOfArgs(CommandSender commandSender, String[] args, int limit) {
+        if (args.length > limit) {
+            commandSender.sendMessage(tooManyArgsPrefix);
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

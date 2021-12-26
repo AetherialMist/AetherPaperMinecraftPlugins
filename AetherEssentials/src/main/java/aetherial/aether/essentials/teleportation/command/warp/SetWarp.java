@@ -30,8 +30,8 @@ public class SetWarp extends CommandWrapper {
     private final String warpCreateFailedPrefix = applyDefaultMessageColor("Failed to create warp: " + DEFAULT_PLAYER_COLOR_CODE);
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, label);
+    public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args) {
+        Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalPlayer.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
             return false;
         }
@@ -39,12 +39,8 @@ public class SetWarp extends CommandWrapper {
         String warpName = args[0];
 
         boolean created = WarpStorage.getInstance().setWarpLocation(warpName, player.getLocation()).isPresent();
-
-        if (created) {
-            player.sendMessage(warpCreatedPrefix + warpName);
-        } else {
-            player.sendMessage(warpCreateFailedPrefix + warpName);
-        }
+        String messageBase = created ? warpCreatedPrefix : warpCreateFailedPrefix;
+        player.sendMessage(messageBase + warpName);
 
         return true;
     }

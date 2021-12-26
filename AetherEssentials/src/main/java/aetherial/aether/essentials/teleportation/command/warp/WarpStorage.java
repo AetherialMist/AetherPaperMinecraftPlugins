@@ -3,11 +3,12 @@ package aetherial.aether.essentials.teleportation.command.warp;
 import aetherial.aether.essentials.AetherEssentials;
 import aetherial.aether.essentials.exception.AlreadyInitialized;
 import aetherial.aether.essentials.exception.NotInitialized;
-import aetherial.aether.essentials.teleportation.command.LocationMapConverter;
-import aetherial.aether.essentials.util.Persistence;
+import aetherial.aether.essentials.util.persistence.Persistence;
+import aetherial.aether.essentials.util.persistence.yaml.LabeledLocationYaml;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -18,7 +19,7 @@ public class WarpStorage {
 
     private static WarpStorage instance;
     private static final Map<String, Location> warpLocations = new ConcurrentHashMap<>();
-    private static final String WARPS_SUBFOLDER = "warps";
+    private static final String WARPS_SUBFOLDER_NAME = "warps";
 
     public static WarpStorage getInstance() {
         if (instance == null) {
@@ -38,7 +39,7 @@ public class WarpStorage {
     private final File warpsFolder;
 
     private WarpStorage(JavaPlugin plugin) {
-        warpsFolder = Persistence.getInstance().getDataSubfolder(WARPS_SUBFOLDER);
+        warpsFolder = Persistence.getInstance().getDataSubfolder(WARPS_SUBFOLDER_NAME);
         loadSavedWarps(plugin);
     }
 
@@ -47,26 +48,22 @@ public class WarpStorage {
             warpsFolder.listFiles((dir, name) -> name.substring(name.lastIndexOf('.')).equals(Persistence.YAML_FILE_EXT))
         );
         if (optional.isEmpty()) {
-            log.info("No saved warps to load");
+            log.info("Failed to load saved warps");
             return;
         }
         File[] files = optional.get();
+        if (files.length == 0) {
+            return;
+        }
 
         for (File file : files) {
-            Optional<Map<String, Object>> optionalData = Persistence.getInstance().readYamlFile(file);
-            if (optionalData.isEmpty()) {
+            Server server = plugin.getServer();
+            Optional<LabeledLocationYaml> optionalLabeledLocationYaml = Persistence.getInstance().readYamlFile(file, LabeledLocationYaml.class);
+            if (optionalLabeledLocationYaml.isEmpty()) {
                 continue;
             }
-            Map<String, Object> data = optionalData.get();
-
-            Optional<Location> optionalLocation = LocationMapConverter.fromMap(plugin.getServer(), data);
-
-            if (optionalLocation.isPresent()) {
-                Location location = optionalLocation.get();
-                String warpName = (String) data.get(LocationMapConverter.NAME_DATA);
-
-                warpLocations.put(warpName, location);
-            }
+            LabeledLocationYaml locationYaml = optionalLabeledLocationYaml.get();
+            warpLocations.put(locationYaml.getLabel(), locationYaml.asLocation(server));
         }
     }
 
@@ -79,7 +76,7 @@ public class WarpStorage {
     }
 
     public Optional<Location> setWarpLocation(String warpName, Location location) {
-        boolean saved = saveWarp(warpName, location);
+        boolean saved = Persistence.getInstance().writeFileYaml(WARPS_SUBFOLDER_NAME, warpName, new LabeledLocationYaml(warpName, location));
         if (!saved) {
             return Optional.empty();
         }
@@ -88,14 +85,8 @@ public class WarpStorage {
         return Optional.of(location);
     }
 
-    private boolean saveWarp(String warpName, Location location) {
-        Map<String, Object> data = LocationMapConverter.toMap(warpName, location);
-
-        return Persistence.getInstance().writeFileYaml(WARPS_SUBFOLDER, warpName, data, true);
-    }
-
     public Optional<Location> deleteWarpLocation(String warpName) {
-        boolean deleted = deleteWarp(warpName);
+        boolean deleted = Persistence.getInstance().deleteYamlFile(WARPS_SUBFOLDER_NAME, warpName);
         if (!deleted) {
             return Optional.empty();
         }
@@ -103,12 +94,8 @@ public class WarpStorage {
         return Optional.ofNullable(location);
     }
 
-    private boolean deleteWarp(String warpName) {
-        return Persistence.getInstance().deleteYamlFile(WARPS_SUBFOLDER, warpName);
-    }
-
     public List<String> onTabComplete(String arg) {
-        List<String> allWarps = new ArrayList<>(getWarpLocationNames());
+        List<String> allWarps = getWarpLocationNames();
         List<String> possibleCompletes = new ArrayList<>();
 
         for (String warp : allWarps) {
