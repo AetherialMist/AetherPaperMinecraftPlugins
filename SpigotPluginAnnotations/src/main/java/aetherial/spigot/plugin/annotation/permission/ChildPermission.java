@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * <p>
  * ###
  * # permissions:
- * #   some-permission:
+ * #   PARENT:
  * #     children:
  * #       NAME: INHERIT
  * ###
@@ -17,8 +17,10 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(ChildPermissions.class)
 public @interface ChildPermission {
 
+    String parent();
     String name();
     boolean inherit() default true;
 

@@ -6,6 +6,8 @@ import java.lang.annotation.*;
  * Defines the author of the plugin.
  * <p>
  * Mutually exclusive with {@link Authors}
+ * <p>
+ * If used, MUST appear on same Element as {@link Plugin}
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

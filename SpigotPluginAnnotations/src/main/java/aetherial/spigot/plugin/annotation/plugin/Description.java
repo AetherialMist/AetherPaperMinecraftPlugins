@@ -4,6 +4,8 @@ import java.lang.annotation.*;
 
 /**
  * The description of the plugin
+ * <p>
+ * If used, MUST appear on same Element as {@link Plugin}
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
