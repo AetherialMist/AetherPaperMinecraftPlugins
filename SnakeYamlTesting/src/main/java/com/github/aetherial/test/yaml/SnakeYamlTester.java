@@ -52,6 +52,9 @@ public class SnakeYamlTester {
         log.info(data);
         log.info(labeledLocationYaml.toString());
         log.info(testRecord.toString());
+
+        log.warn("This is a warning");
+        log.error("This is an error");
     }
 
 }
