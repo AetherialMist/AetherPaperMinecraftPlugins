@@ -25,6 +25,7 @@ import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,13 +79,20 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
             return true;
         }
 
+        finalizeData();
+        return writePluginYaml();
+    }
+
+    private void finalizeData() {
         if (!commandsBlock.isEmpty()) {
             data.put(COMMANDS, commandsBlock);
         }
         if (!permissionsBlock.isEmpty()) {
             data.put(PERMISSIONS, permissionsBlock);
         }
+    }
 
+    private boolean writePluginYaml() {
         try (Writer writer = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", OUTPUT_FILE)
             .openWriter()) {
             Yaml yaml = new Yaml();
@@ -96,7 +104,6 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
             raiseError("Failed to create plugin.yml file");
             return false;
         }
-
         return true;
     }
 
@@ -123,132 +130,61 @@ public class SpigotPluginAnnotationProcessor extends AbstractProcessor {
     }
 
     private void processPluginAnnotation(Element mainClassElement) {
-        TypeMirror javaPluginMirror = this.processingEnv.getElementUtils().getTypeElement(JavaPlugin.class.getName()).asType();
-        if (!(mainClassElement instanceof TypeElement mainClass)) {
-            raiseError("@Plugin is not on a Class!");
-            return;
-        } else if (!this.isSubtype(mainClass.asType(), javaPluginMirror)) {
-            raiseError("@Plugin is not on a JavaPlugin class!");
-            return;
-        } else if (!(mainClass.getEnclosingElement() instanceof PackageElement)) {
-            raiseError("@Plugin is not on a top level class!");
+        if (!isPluginAnnotationValid(mainClassElement)) {
             return;
         }
-        Set<Modifier> modifiers = mainClass.getModifiers();
-        if (modifiers.contains(Modifier.ABSTRACT)) {
-            raiseError("@Plugin cannot be on an Abstract class!");
-            return;
-        } else if (modifiers.contains(Modifier.STATIC)) {
-            raiseError("@Plugin cannot be on a Static class!");
-            return;
-        }
-
+        // Type validated in above check
+        TypeElement mainClass = (TypeElement) mainClassElement;
 
         Plugin plugin = mainClassElement.getAnnotation(Plugin.class);
         data.put(MAIN, mainClass.getQualifiedName().toString());
         data.put(NAME, plugin.name());
         data.put(VERSION, plugin.version());
 
-        processDescriptionAnnotation(mainClassElement);
-        processApiVersionAnnotation(mainClassElement);
-        processLoadAnnotation(mainClassElement);
-        processAuthorAnnotation(mainClassElement);
-        processAuthorsAnnotation(mainClassElement);
-        processWebsiteAnnotation(mainClassElement);
-        processDependAnnotation(mainClassElement);
-        processPrefixAnnotation(mainClassElement);
-        processSoftDependAnnotation(mainClassElement);
-        processLoadBeforeAnnotation(mainClassElement);
+        processAnnotation(mainClassElement, Description.class, DESCRIPTION, Description::value);
+        processAnnotation(mainClassElement, ApiVersion.class, API_VERSION, ApiVersion::value);
+        processAnnotation(mainClassElement, Load.class, LOAD, type -> type.value().getLoadType());
+        processAnnotation(mainClassElement, Author.class, AUTHOR, Author::value);
+        processAnnotation(mainClassElement, Authors.class, AUTHORS, Authors::value);
+        processAnnotation(mainClassElement, Website.class, WEBSITE, Website::value);
+        processAnnotation(mainClassElement, Depend.class, DEPEND, Depend::value);
+        processAnnotation(mainClassElement, Prefix.class, PREFIX, Prefix::value);
+        processAnnotation(mainClassElement, SoftDepend.class, SOFT_DEPEND, SoftDepend::value);
+        processAnnotation(mainClassElement, LoadBefore.class, LOAD_BEFORE, LoadBefore::value);
     }
 
-    private void processDescriptionAnnotation(Element mainClassElement) {
-        Optional<Description> optional = Optional.ofNullable(mainClassElement.getAnnotation(Description.class));
+    private boolean isPluginAnnotationValid(Element mainClassElement) {
+        // Validate inheritance
+        TypeMirror javaPluginMirror = this.processingEnv.getElementUtils().getTypeElement(JavaPlugin.class.getName()).asType();
+        if (!(mainClassElement instanceof TypeElement mainClass)) {
+            raiseError("@Plugin is not on a Class!");
+            return false;
+        } else if (!this.isSubtype(mainClass.asType(), javaPluginMirror)) {
+            raiseError("@Plugin is not on a JavaPlugin class!");
+            return false;
+        } else if (!(mainClass.getEnclosingElement() instanceof PackageElement)) {
+            raiseError("@Plugin is not on a top level class!");
+            return false;
+        }
+        // Validate Class modifiers
+        Set<Modifier> modifiers = mainClass.getModifiers();
+        if (modifiers.contains(Modifier.ABSTRACT)) {
+            raiseError("@Plugin cannot be on an Abstract class!");
+            return false;
+        } else if (modifiers.contains(Modifier.STATIC)) {
+            raiseError("@Plugin cannot be on a Static class!");
+            return false;
+        }
+        return true;
+    }
+
+    private <A extends Annotation> void processAnnotation(Element element, Class<A> annotationType, String tag, YamlValueHandler<A> handler) {
+        Optional<A> optional = Optional.ofNullable(element.getAnnotation(annotationType));
         if (optional.isEmpty()) {
             return;
         }
-        Description annotation = optional.get();
-        data.put(DESCRIPTION, annotation.value());
-    }
-
-    private void processApiVersionAnnotation(Element mainClassElement) {
-        Optional<ApiVersion> optional = Optional.ofNullable(mainClassElement.getAnnotation(ApiVersion.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        ApiVersion annotation = optional.get();
-        data.put(API_VERSION, annotation.value());
-    }
-
-    private void processLoadAnnotation(Element mainClassElement) {
-        Optional<Load> optional = Optional.ofNullable(mainClassElement.getAnnotation(Load.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Load annotation = optional.get();
-        data.put(LOAD, annotation.value().getLoadType());
-    }
-
-    private void processAuthorAnnotation(Element mainClassElement) {
-        Optional<Author> optional = Optional.ofNullable(mainClassElement.getAnnotation(Author.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Author annotation = optional.get();
-        data.put(AUTHOR, annotation.value());
-    }
-
-    private void processAuthorsAnnotation(Element mainClassElement) {
-        Optional<Authors> optional = Optional.ofNullable(mainClassElement.getAnnotation(Authors.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Authors annotation = optional.get();
-        data.put(AUTHORS, annotation.value());
-    }
-
-    private void processWebsiteAnnotation(Element mainClassElement) {
-        Optional<Website> optional = Optional.ofNullable(mainClassElement.getAnnotation(Website.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Website annotation = optional.get();
-        data.put(WEBSITE, annotation.value());
-    }
-
-    private void processDependAnnotation(Element mainClassElement) {
-        Optional<Depend> optional = Optional.ofNullable(mainClassElement.getAnnotation(Depend.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Depend annotation = optional.get();
-        data.put(DEPEND, annotation.value());
-    }
-
-    private void processPrefixAnnotation(Element mainClassElement) {
-        Optional<Prefix> optional = Optional.ofNullable(mainClassElement.getAnnotation(Prefix.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        Prefix annotation = optional.get();
-        data.put(PREFIX, annotation.value());
-    }
-
-    private void processSoftDependAnnotation(Element mainClassElement) {
-        Optional<SoftDepend> optional = Optional.ofNullable(mainClassElement.getAnnotation(SoftDepend.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        SoftDepend annotation = optional.get();
-        data.put(SOFT_DEPEND, annotation.value());
-    }
-
-    private void processLoadBeforeAnnotation(Element mainClassElement) {
-        Optional<LoadBefore> optional = Optional.ofNullable(mainClassElement.getAnnotation(LoadBefore.class));
-        if (optional.isEmpty()) {
-            return;
-        }
-        LoadBefore annotation = optional.get();
-        data.put(LOAD_BEFORE, annotation.value());
+        A annotation = optional.get();
+        data.put(tag, handler.getYamlValue(annotation));
     }
 
     private boolean isSubtype(TypeMirror child, TypeMirror parent) {
