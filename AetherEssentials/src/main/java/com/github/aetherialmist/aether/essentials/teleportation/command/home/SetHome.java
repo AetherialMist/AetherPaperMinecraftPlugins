@@ -19,7 +19,7 @@ import static com.github.aetherialmist.aether.essentials.teleportation.command.h
 
 @CommandTag(
     name = TpRegistration.SET_HOME,
-    usage = "/" + TpRegistration.SET_HOME + " [string|nothing]",
+    usage = "/" + TpRegistration.SET_HOME + " <home>",
     desc = "Set your home",
     permission = SetHome.PERMISSION
 )
@@ -42,7 +42,7 @@ public class SetHome extends CommandWrapper {
 
         boolean created = HomeStorage.getInstance().setHome(player, homeLabel).isPresent();
         String message = created ? homeCreatedPrefix : homeCreateFailedPrefix;
-        commandSender.sendMessage(message + commandLabel);
+        commandSender.sendMessage(message + homeLabel);
 
         return true;
     }

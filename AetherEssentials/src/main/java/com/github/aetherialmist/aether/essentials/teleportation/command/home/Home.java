@@ -2,7 +2,9 @@ package com.github.aetherialmist.aether.essentials.teleportation.command.home;
 
 import com.github.aetherialmist.aether.essentials.AetherEssentials;
 import com.github.aetherialmist.aether.essentials.Common;
+import com.github.aetherialmist.aether.essentials.teleportation.TpHistoryTracker;
 import com.github.aetherialmist.aether.essentials.teleportation.TpRegistration;
+import com.github.aetherialmist.aether.essentials.teleportation.command.Back;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
 import aetherial.spigot.plugin.annotation.command.CommandTag;
 import org.bukkit.Location;
@@ -18,7 +20,7 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 
 @CommandTag(
     name = TpRegistration.HOME,
-    usage = "/" + TpRegistration.HOME + " [string|nothing]",
+    usage = "/" + TpRegistration.HOME + " <home>",
     desc = "Teleport to your home",
     permission = Home.PERMISSION
 )
@@ -39,10 +41,14 @@ public class Home extends CommandWrapper {
         Player player = optionalPlayer.get();
         String homeLabel = args.length > 0 ? args[0] : DEFAULT_HOME_LABEL;
 
-        Optional<Location> optionalLocation = HomeStorage.getInstance().getHome(player, command.getName());
+        Optional<Location> optionalLocation = HomeStorage.getInstance().getHome(player, homeLabel);
         if (optionalLocation.isEmpty()) {
             commandSender.sendMessage(notValidHomePrefix + homeLabel);
             return true;
+        }
+
+        if (player.hasPermission(Back.PERMISSION_ON_TP)) {
+            TpHistoryTracker.getInstance().updateBeforeLocation(player, player.getLocation());
         }
 
         player.teleport(optionalLocation.get());

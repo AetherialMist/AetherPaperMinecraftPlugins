@@ -38,7 +38,7 @@ public class DeleteHome extends CommandWrapper {
 
         boolean deleted = HomeStorage.getInstance().deleteHome(player, homeLabel).isPresent();
         String message = deleted ? homeDeletedPrefix : homeDeleteFailedPrefix;
-        commandSender.sendMessage(message + commandLabel);
+        commandSender.sendMessage(message + homeLabel);
 
         return true;
     }

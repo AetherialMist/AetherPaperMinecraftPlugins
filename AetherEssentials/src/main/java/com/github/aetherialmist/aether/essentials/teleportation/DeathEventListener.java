@@ -8,7 +8,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class DeathEventListener implements Listener {
 
-    @SuppressWarnings("unused")
     @EventHandler
     public void backOnDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();

@@ -45,7 +45,7 @@ public class WarpInfo extends CommandWrapper {
         Location location = optionalLocation.get();
 
         String world = location.getWorld().getName();
-        String message = String.format("Home: %s, World: %s, X: %d, Y: %d, Z: %d",
+        String message = String.format("Warp: %s, World: %s, X: %d, Y: %d, Z: %d",
             warpName, world, (int) location.getX(), (int) location.getY(), (int) location.getZ());
         sender.sendMessage(message);
 

@@ -24,6 +24,15 @@ public class TpHistoryTracker {
     private TpHistoryTracker() {
     }
 
+    /**
+     * Sets the back location to where the Player currently is
+     *
+     * @param player The player to update their back location
+     */
+    public void updateBeforeLocation(Player player) {
+        this.updateBeforeLocation(player, player.getLocation());
+    }
+
     public void updateBeforeLocation(Player player, Location location) {
         this.beforeRecentTpLocation.put(player, location);
     }
