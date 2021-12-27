@@ -4,17 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.aetherial</groupId>
+    <groupId>com.github.AetherialMist</groupId>
     <artifactId>aether-paper-minecraft-plugins</artifactId>
     <name>Aether Paper Plugins</name>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>SpigotPluginAnnotations</module>
         <module>AetherEssentials</module>
-        <module>SnakeYamlTesting</module>
-        <module>AetherLogging</module>
     </modules>
 
     <properties>
@@ -25,6 +22,12 @@
     </properties>
 
     <repositories>
+        <!-- Pull GitHub releases as a dependency -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -35,14 +38,14 @@
         <dependencies>
             <!-- Aether Dependencies -->
             <dependency>
-                <groupId>com.github.aetherial</groupId>
-                <artifactId>spigot-plugin-annotations</artifactId>
-                <version>${revision}</version>
+                <groupId>com.github.AetherialMist</groupId>
+                <artifactId>SpigotPluginAnnotations</artifactId>
+                <version>release-1.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.github.aetherial</groupId>
-                <artifactId>aether-logging</artifactId>
-                <version>${revision}</version>
+                <groupId>com.github.AetherialMist</groupId>
+                <artifactId>Log4jLogging</artifactId>
+                <version>1.0.1</version>
             </dependency>
 
             <!--
@@ -78,50 +81,26 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Logging -->
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>2.17.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-core</artifactId>
-                <version>2.17.0</version>
-            </dependency>
-            <!--
-            Maven: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-            -->
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j-impl</artifactId>
-                <version>2.17.0</version>
-            </dependency>
-
             <!-- Testing Dependencies -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>5.8.2</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>5.8.2</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>4.2.0</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>4.2.0</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
