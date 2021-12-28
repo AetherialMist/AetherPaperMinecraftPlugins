@@ -1,13 +1,16 @@
 package com.github.aetherialmist.aether.essentials;
 
 import com.github.aetherialmist.aether.essentials.chat.ChatRegistration;
-import com.github.aetherialmist.aether.essentials.teleportation.TpRegistration;
+import com.github.aetherialmist.aether.essentials.home.HomeRegistrar;
+import com.github.aetherialmist.aether.essentials.teleportation.TeleportationRegistrar;
 import com.github.aetherialmist.aether.essentials.util.persistence.Persistence;
 import aetherial.spigot.plugin.annotation.permission.PermissionTag;
 import aetherial.spigot.plugin.annotation.plugin.ApiVersion;
 import aetherial.spigot.plugin.annotation.plugin.Author;
 import aetherial.spigot.plugin.annotation.plugin.Description;
 import aetherial.spigot.plugin.annotation.plugin.Plugin;
+import com.github.aetherialmist.aether.essentials.vanilla.VanillaRegistrar;
+import com.github.aetherialmist.aether.essentials.warp.WarpRegistrar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,12 +26,9 @@ public class AetherEssentials extends JavaPlugin {
     public static final String PERMISSION_BASE = "aether.essentials.";
     public static final String COMMAND_PREFIX = "/";
 
-    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(AetherEssentials.PLUGIN_NAME);
 
     // Used to keep the object instance alive by keeping a reference
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private TpRegistration tpRegistration;
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private ChatRegistration chatRegistration;
 
@@ -40,10 +40,22 @@ public class AetherEssentials extends JavaPlugin {
         // SnakeYaml breaks if you don't set the ClassLoader...
         Thread.currentThread().setContextClassLoader(this.getClassLoader());
 
+        CommandRegistration.init(this);
+        EventRegistration.init(this);
         Common.init(this);
         Persistence.init(this);
-        tpRegistration = new TpRegistration(this);
+
+        initModules();
         chatRegistration = new ChatRegistration(this);
+
+        log.info("Finished initializing");
+    }
+
+    private void initModules() {
+        TeleportationRegistrar.init();
+        HomeRegistrar.init();
+        WarpRegistrar.init();
+        VanillaRegistrar.init();
     }
 
     /**

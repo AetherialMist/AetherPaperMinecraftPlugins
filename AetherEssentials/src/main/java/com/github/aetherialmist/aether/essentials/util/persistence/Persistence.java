@@ -2,7 +2,7 @@ package com.github.aetherialmist.aether.essentials.util.persistence;
 
 import com.github.aetherialmist.aether.essentials.AetherEssentials;
 import com.github.aetherialmist.aether.essentials.exception.AlreadyInitialized;
-import com.github.aetherialmist.aether.essentials.exception.ConfigException;
+import com.github.aetherialmist.aether.essentials.exception.FailedInitialize;
 import com.github.aetherialmist.aether.essentials.exception.NotInitialized;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,7 +69,7 @@ public class Persistence {
 
         if (!folderExists) {
             String message = String.format("Failed to initialize data subfolder: %s", subfolder);
-            throw new ConfigException(message);
+            throw new FailedInitialize(message);
         }
 
         return folder;

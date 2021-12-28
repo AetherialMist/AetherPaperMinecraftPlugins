@@ -2,8 +2,8 @@ package com.github.aetherialmist.aether.essentials.teleportation.command;
 
 import com.github.aetherialmist.aether.essentials.AetherEssentials;
 import com.github.aetherialmist.aether.essentials.Common;
-import com.github.aetherialmist.aether.essentials.teleportation.TpHistoryTracker;
-import com.github.aetherialmist.aether.essentials.teleportation.TpRegistration;
+import com.github.aetherialmist.aether.essentials.teleportation.persistence.TpHistoryTracker;
+import com.github.aetherialmist.aether.essentials.teleportation.TeleportationRegistrar;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
 import aetherial.spigot.plugin.annotation.command.CommandTag;
 import aetherial.spigot.plugin.annotation.permission.PermissionTag;
@@ -24,8 +24,8 @@ import java.util.Optional;
  * them once. Instead of each time the command is used.
  */
 @CommandTag(
-    name = TpRegistration.BACK,
-    usage = AetherEssentials.COMMAND_PREFIX + TpRegistration.BACK,
+    name = TeleportationRegistrar.BACK,
+    usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.BACK,
     desc = "Teleport to your previous location",
     permission = Back.PERMISSION
 )
@@ -33,9 +33,9 @@ import java.util.Optional;
 @PermissionTag(name = Back.PERMISSION_ON_TP, desc = "Can use back after any teleport")
 public class Back extends CommandWrapper {
 
-    public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TpRegistration.BACK;
-    public static final String PERMISSION_ON_DEATH = AetherEssentials.PERMISSION_BASE + TpRegistration.BACK + ".ondeath";
-    public static final String PERMISSION_ON_TP = AetherEssentials.PERMISSION_BASE + TpRegistration.BACK + ".onteleport";
+    public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK;
+    public static final String PERMISSION_ON_DEATH = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK + ".ondeath";
+    public static final String PERMISSION_ON_TP = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK + ".onteleport";
 
     private final String noBackLocation = ChatColorFormatter.applyDefaultMessageColor("No location to go back to");
 
