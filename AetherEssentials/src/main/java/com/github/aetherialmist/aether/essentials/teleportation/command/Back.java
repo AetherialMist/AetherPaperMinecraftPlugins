@@ -33,8 +33,19 @@ import java.util.Optional;
 @PermissionTag(name = Back.PERMISSION_ON_TP, desc = "Can use back after any teleport")
 public class Back extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK;
+
+    /**
+     * The permission for death to count as a back location
+     */
     public static final String PERMISSION_ON_DEATH = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK + ".ondeath";
+
+    /**
+     * The permission for teleporting to count as a back location
+     */
     public static final String PERMISSION_ON_TP = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.BACK + ".onteleport";
 
     private final String noBackLocation = ChatColorFormatter.applyDefaultMessageColor("No location to go back to");

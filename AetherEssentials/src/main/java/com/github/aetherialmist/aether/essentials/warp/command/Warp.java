@@ -19,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Teleport to a warp Location
+ */
 @CommandTag(
     name = WarpRegistrar.WARP,
     usage = AetherEssentials.COMMAND_PREFIX + WarpRegistrar.WARP + " <warp>",
@@ -27,6 +30,9 @@ import java.util.Optional;
 )
 public class Warp extends CommandWrapper implements TabCompleteWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + WarpRegistrar.WARP;
 
     private final String warpDoesNotExistPrefix = ChatColorFormatter.applyDefaultMessageColor("Warp does not exist: " + ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE);

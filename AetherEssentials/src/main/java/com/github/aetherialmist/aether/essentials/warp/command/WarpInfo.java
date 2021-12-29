@@ -16,6 +16,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Get information about a warp
+ */
 @CommandTag(
     name = WarpRegistrar.WARP_INFO,
     usage = AetherEssentials.COMMAND_PREFIX + WarpRegistrar.WARP_INFO + " <warp>",
@@ -24,6 +27,9 @@ import java.util.Optional;
 )
 public class WarpInfo extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + WarpRegistrar.WARP_INFO;
 
     private final String warpNotFound = ChatColorFormatter.applyDefaultMessageColor("Warp not found: " + ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE);

@@ -20,7 +20,7 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.applyDefaultMessageColor;
 
 /**
- * The home's command logic
+ * Teleport to the Player's home
  */
 @CommandTag(
     name = HomeRegistrar.HOME,

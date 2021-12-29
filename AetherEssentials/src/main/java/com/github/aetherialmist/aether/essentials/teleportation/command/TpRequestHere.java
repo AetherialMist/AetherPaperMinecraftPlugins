@@ -19,6 +19,9 @@ import java.util.List;
 )
 public class TpRequestHere extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_REQUEST_HERE;
 
     @Override

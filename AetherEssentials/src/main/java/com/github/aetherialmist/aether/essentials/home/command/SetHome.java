@@ -19,7 +19,7 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 import static com.github.aetherialmist.aether.essentials.home.command.Home.DEFAULT_HOME_LABEL;
 
 /**
- * The set-home's command logic
+ * Set the Player's home
  */
 @CommandTag(
     name = HomeRegistrar.SET_HOME,

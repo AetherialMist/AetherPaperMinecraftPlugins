@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The delete-home's command logic
+ * Delete the Player's home
  */
 @CommandTag(
     name = HomeRegistrar.DELETE_HOME,

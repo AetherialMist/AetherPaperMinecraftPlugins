@@ -5,10 +5,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Handles registering an Event Listener
+ */
 public class EventRegistration {
 
     private static EventRegistration instance;
 
+    /**
+     * Initialize the instance of this for static method calls
+     *
+     * @param plugin This plugin
+     */
     public static void init(JavaPlugin plugin) {
         if (instance != null) {
             throw new AlreadyInitialized(EventRegistration.class);
@@ -16,6 +24,9 @@ public class EventRegistration {
         instance = new EventRegistration(plugin);
     }
 
+    /**
+     * @param listener The Listener to register
+     */
     public static void registerEvents(Listener listener) {
         instance.registerEventsInternal(listener);
     }

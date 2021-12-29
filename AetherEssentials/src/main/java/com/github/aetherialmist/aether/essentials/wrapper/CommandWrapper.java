@@ -13,9 +13,9 @@ public abstract class CommandWrapper implements CommandExecutor, TabCompleteWrap
 
     /**
      * @param commandSender The source that sent the command
-     * @param command       What the command is "/tpa"
-     * @param commandLabel         The first word of the command excluding args
-     * @param args          The arguments of the command
+     * @param command       The Command
+     * @param commandLabel  The label of the Command
+     * @param args          The arguments passed to the command
      * @return True if the command was successful, otherwise false
      */
     @SuppressWarnings({"java:S3038", "NullableProblems"})

@@ -17,6 +17,9 @@ import java.util.Optional;
 
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.*;
 
+/**
+ * Cancel a pending teleport request
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_CANCEL,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_CANCEL,
@@ -25,6 +28,9 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 )
 public class TpCancel extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_CANCEL;
 
     private final String noPendingRequests = applyDefaultMessageColor("You don't have any requests to cancel");

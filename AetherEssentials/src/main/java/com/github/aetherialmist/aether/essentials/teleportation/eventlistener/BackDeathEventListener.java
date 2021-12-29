@@ -7,6 +7,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+/**
+ * Listens for when Players die and sets their back location to where they died
+ * if the Player has the appropriate permission.
+ */
 public class BackDeathEventListener implements Listener {
 
     @EventHandler

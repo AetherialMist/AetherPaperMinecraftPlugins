@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Send a teleport request
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_ACCEPT,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_ACCEPT,
@@ -18,6 +21,9 @@ import java.util.List;
 )
 public class TpAccept extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_ACCEPT;
 
     @Override

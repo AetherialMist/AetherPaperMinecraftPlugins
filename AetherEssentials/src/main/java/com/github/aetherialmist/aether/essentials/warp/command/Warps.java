@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * List all warp Locations
+ */
 @CommandTag(
     name = WarpRegistrar.WARPS,
     usage = AetherEssentials.COMMAND_PREFIX + WarpRegistrar.WARPS,
@@ -23,6 +26,9 @@ import java.util.Optional;
 )
 public class Warps extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + WarpRegistrar.WARPS;
 
     private final String messagePrefix = ChatColorFormatter.applyDefaultMessageColor("Warp locations: " + ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE);

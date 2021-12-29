@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The home-info's command logic
+ * Get information about the Player's home
  */
 @CommandTag(
     name = HomeRegistrar.HOME_INFO,

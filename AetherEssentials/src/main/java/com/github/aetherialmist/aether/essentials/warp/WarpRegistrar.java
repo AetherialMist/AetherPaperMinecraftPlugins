@@ -6,6 +6,9 @@ import com.github.aetherialmist.aether.essentials.warp.persistence.WarpStorage;
 
 import static com.github.aetherialmist.aether.essentials.CommandRegistration.registerCommand;
 
+/**
+ * Handles registering the warp module
+ */
 public class WarpRegistrar {
 
     private static WarpRegistrar instance;
@@ -21,10 +24,29 @@ public class WarpRegistrar {
         instance = new WarpRegistrar();
     }
 
+    /**
+     * The command label for the warp command
+     */
     public static final String WARP = "warp";
+
+    /**
+     * The command label for the warps command
+     */
     public static final String WARPS = "warps";
+
+    /**
+     * The command label for the warp-info command
+     */
     public static final String WARP_INFO = "warpinfo";
+
+    /**
+     * The command label for the set-warp command
+     */
     public static final String SET_WARP = "setwarp";
+
+    /**
+     * The command label for the delete-warp command
+     */
     public static final String DELETE_WARP = "delwarp";
 
     private WarpRegistrar() {

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The homes's command logic
+ * List the Player's homes
  */
 @CommandTag(
     name = HomeRegistrar.HOMES,

@@ -14,6 +14,11 @@ import java.util.*;
 
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.*;
 
+/**
+ * Toggle auto-deny of teleport requests
+ * <p>
+ * The static aspects handle the storage and querying of players with auto-deny enabled
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_TOGGLE,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_TOGGLE,
@@ -22,6 +27,9 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 )
 public class TpToggle extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_TOGGLE;
 
     private final String failedToggle = applyColor("Failed to toggle auto-deny");

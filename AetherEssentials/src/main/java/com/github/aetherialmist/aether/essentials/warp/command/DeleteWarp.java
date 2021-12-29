@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Delete a warp Location
+ */
 @CommandTag(
     name = WarpRegistrar.DELETE_WARP,
     usage = AetherEssentials.COMMAND_PREFIX + WarpRegistrar.DELETE_WARP + " <warp>",
@@ -23,6 +26,9 @@ import java.util.Optional;
 )
 public class DeleteWarp extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + WarpRegistrar.DELETE_WARP;
 
     private final String warpDeletedPrefix = ChatColorFormatter.applyDefaultMessageColor("Warp deleted: " + ChatColorFormatter.DEFAULT_PLAYER_COLOR_CODE);

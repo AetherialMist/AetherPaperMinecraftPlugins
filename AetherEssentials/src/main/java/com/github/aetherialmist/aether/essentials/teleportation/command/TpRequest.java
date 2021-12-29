@@ -18,6 +18,12 @@ import java.util.Optional;
 
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.*;
 
+/**
+ * Send a teleport request to another player
+ *
+ * The static methods handle shared logic of teleport requests to players (to
+ * and here) as well as accepting/denying the requests.
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_REQUEST,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_REQUEST + " <player>",
@@ -26,6 +32,9 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 )
 public class TpRequest extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_REQUEST;
 
     @Override
@@ -43,12 +52,33 @@ public class TpRequest extends CommandWrapper {
     private static final String NO_PENDING_REQUESTS = applyDefaultMessageColor("You don't have any pending requests");
     private static final String SENDER_MESSAGE_PREFIX = applyDefaultMessageColor("You sent a " + DEFAULT_COMMAND_COLOR_CODE);
     private static final String SENDER_MESSAGE_MIDDLE = applyDefaultMessageColor(" request sent to: " + DEFAULT_PLAYER_COLOR_CODE);
+
+    /**
+     * Message prefix to send the accepter of a teleport request before the sender's name
+     */
     public static final String ACCEPTER_MESSAGE_PREFIX = applyColor(DEFAULT_PLAYER_COLOR_CODE);
+
+    /**
+     * Message contents to send to the accepter of a teleport request after the sender's name but before the command label
+     */
     public static final String ACCEPTER_MESSAGE_MIDDLE = applyDefaultMessageColor(" has sent a " + DEFAULT_COMMAND_COLOR_CODE);
+
+    /**
+     * Message suffix to send to the accepter of a teleport request after the command label
+     */
     public static final String ACCEPTER_MESSAGE_SUFFIX = applyColor(String.format("%s request. Type %s/%s %sto accept or %s/%s %sto decline",
         DEFAULT_MESSAGE_COLOR_CODE, DEFAULT_COMMAND_COLOR_CODE, TeleportationRegistrar.TP_ACCEPT, DEFAULT_MESSAGE_COLOR_CODE,
         DEFAULT_COMMAND_COLOR_CODE, TeleportationRegistrar.TP_DENY, DEFAULT_MESSAGE_COLOR_CODE));
 
+    /**
+     * Send a teleport request to another player
+     *
+     * @param commandSender The sender of the command
+     * @param commandLabel  The name of the command
+     * @param args          The arguments passed to the command
+     * @param here          True if the accepter should be teleported to the sender, false for the inverse
+     * @return True if the request was valid and sent, otherwise false
+     */
     public static boolean sendRequest(CommandSender commandSender, String commandLabel, String[] args, boolean here) {
         Optional<Player> optionalPlayer = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);
         if (optionalPlayer.isEmpty() || !Common.verifyExactlyOneArg(commandSender, args)) {
@@ -79,6 +109,15 @@ public class TpRequest extends CommandWrapper {
         return true;
     }
 
+    /**
+     * Reply to a pending teleport request
+     *
+     * @param commandSender The sender of the command
+     * @param commandLabel  The name of the command
+     * @param args          The arguments passed to the command
+     * @param accept        True if the accepter has accepted the request, otherwise false
+     * @return The sender of the request if the reply is valid, otherwise empty
+     */
     public static Optional<Player> replyToRequest(CommandSender commandSender, String commandLabel, String[] args, boolean accept) {
         // The player that send accept/deny
         Optional<Player> optionalAccepter = Common.verifyCommandSenderIsPlayer(commandSender, commandLabel);

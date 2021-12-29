@@ -17,6 +17,9 @@ import java.util.Optional;
 
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.*;
 
+/**
+ * Request all online players to teleport to the sender
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_REQUEST_HERE_ALL,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_REQUEST_HERE_ALL,
@@ -25,6 +28,9 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 )
 public class TpRequestHereAll extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_REQUEST_HERE_ALL;
 
     private final String senderMessagePrefix = applyColor(DEFAULT_COMMAND_COLOR_CODE);

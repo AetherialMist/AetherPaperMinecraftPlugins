@@ -24,10 +24,29 @@ public class HomeRegistrar {
         instance = new HomeRegistrar();
     }
 
+    /**
+     * The command label for the home command
+     */
     public static final String HOME = "home";
+
+    /**
+     * The command label for the homes command
+     */
     public static final String HOMES = "homes";
+
+    /**
+     * The command label for the home-info command
+     */
     public static final String HOME_INFO = "homeinfo";
+
+    /**
+     * The command label for the set-home command
+     */
     public static final String SET_HOME = "sethome";
+
+    /**
+     * The command label for the delete-home command
+     */
     public static final String DELETE_HOME = "delhome";
 
     private HomeRegistrar() {

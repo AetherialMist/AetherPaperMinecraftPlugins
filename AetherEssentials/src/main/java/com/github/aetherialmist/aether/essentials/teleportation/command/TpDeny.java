@@ -14,6 +14,9 @@ import java.util.Optional;
 
 import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter.*;
 
+/**
+ * Deny a teleport request
+ */
 @CommandTag(
     name = TeleportationRegistrar.TP_DENY,
     usage = AetherEssentials.COMMAND_PREFIX + TeleportationRegistrar.TP_DENY,
@@ -22,6 +25,9 @@ import static com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter
 )
 public class TpDeny extends CommandWrapper {
 
+    /**
+     * The permission associated with this command
+     */
     public static final String PERMISSION = AetherEssentials.PERMISSION_BASE + TeleportationRegistrar.TP_DENY;
 
     private final String senderMessagePrefix = applyDefaultMessageColor("Your teleport request to " + DEFAULT_PLAYER_COLOR_CODE);
