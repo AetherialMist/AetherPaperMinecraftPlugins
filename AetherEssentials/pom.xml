@@ -2,12 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>aether-paper-minecraft-plugins</artifactId>
-        <groupId>com.github.aetherial</groupId>
+        <groupId>com.github.AetherialMist</groupId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>aether-essentials</artifactId>
     <name>Aether Paper Plugins :: Essentials</name>
@@ -16,13 +18,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.AetherialMist</groupId>
+            <artifactId>SpigotPluginAnnotations</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.aetherial</groupId>
-            <artifactId>spigot-plugin-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
