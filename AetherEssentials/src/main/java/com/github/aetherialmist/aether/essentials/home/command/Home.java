@@ -7,7 +7,7 @@ import com.github.aetherialmist.aether.essentials.home.persistence.HomeStorage;
 import com.github.aetherialmist.aether.essentials.teleportation.persistence.TpHistoryTracker;
 import com.github.aetherialmist.aether.essentials.teleportation.command.Back;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
-import aetherial.spigot.plugin.annotation.command.CommandTag;
+import com.github.aetherialmist.spigot.plugin.annotation.command.CommandTag;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -7,7 +7,7 @@ import com.github.aetherialmist.aether.essentials.teleportation.TeleportationReg
 import com.github.aetherialmist.aether.essentials.teleportation.persistence.TpRequestRecord;
 import com.github.aetherialmist.aether.essentials.teleportation.persistence.TpRequestTracker;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
-import aetherial.spigot.plugin.annotation.command.CommandTag;
+import com.github.aetherialmist.spigot.plugin.annotation.command.CommandTag;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

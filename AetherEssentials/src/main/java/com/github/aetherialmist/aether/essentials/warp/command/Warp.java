@@ -8,7 +8,7 @@ import com.github.aetherialmist.aether.essentials.warp.WarpRegistrar;
 import com.github.aetherialmist.aether.essentials.warp.persistence.WarpStorage;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
 import com.github.aetherialmist.aether.essentials.wrapper.TabCompleteWrapper;
-import aetherial.spigot.plugin.annotation.command.CommandTag;
+import com.github.aetherialmist.spigot.plugin.annotation.command.CommandTag;
 import com.github.aetherialmist.aether.essentials.chat.ChatColorFormatter;
 import org.bukkit.Location;
 import org.bukkit.command.Command;

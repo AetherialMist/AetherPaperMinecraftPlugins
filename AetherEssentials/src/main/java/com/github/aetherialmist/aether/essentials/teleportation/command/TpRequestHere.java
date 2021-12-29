@@ -4,7 +4,7 @@ import com.github.aetherialmist.aether.essentials.AetherEssentials;
 import com.github.aetherialmist.aether.essentials.Common;
 import com.github.aetherialmist.aether.essentials.teleportation.TeleportationRegistrar;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
-import aetherial.spigot.plugin.annotation.command.CommandTag;
+import com.github.aetherialmist.spigot.plugin.annotation.command.CommandTag;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

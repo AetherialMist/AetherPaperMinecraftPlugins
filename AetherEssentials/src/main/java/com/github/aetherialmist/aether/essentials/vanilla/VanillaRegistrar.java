@@ -2,6 +2,8 @@ package com.github.aetherialmist.aether.essentials.vanilla;
 
 import com.github.aetherialmist.aether.essentials.exception.AlreadyInitialized;
 import com.github.aetherialmist.aether.essentials.vanilla.commands.Ban;
+import com.github.aetherialmist.aether.essentials.vanilla.commands.BanIp;
+import com.github.aetherialmist.aether.essentials.vanilla.commands.Banlist;
 
 import static com.github.aetherialmist.aether.essentials.CommandRegistration.registerCommand;
 
@@ -30,6 +32,16 @@ public class VanillaRegistrar {
      */
     public static final String BAN = "ban";
 
+    /**
+     * The command label for the ban-ip command
+     */
+    public static final String BAN_IP = "ban-ip";
+
+    /**
+     * The command label for the banlist command
+     */
+    public static final String BAN_LIST = "banlist";
+
     public static final String PARDON = "pardon";
 
     public static final String TP = "tp";
@@ -41,6 +53,8 @@ public class VanillaRegistrar {
 
     private void registerCommands() {
         registerCommand(BAN, new Ban());
+        registerCommand(BAN_IP, new BanIp());
+        registerCommand(BAN_LIST, new Banlist());
     }
 
 }

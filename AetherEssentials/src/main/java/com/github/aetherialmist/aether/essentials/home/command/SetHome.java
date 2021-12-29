@@ -5,7 +5,7 @@ import com.github.aetherialmist.aether.essentials.Common;
 import com.github.aetherialmist.aether.essentials.home.HomeRegistrar;
 import com.github.aetherialmist.aether.essentials.home.persistence.HomeStorage;
 import com.github.aetherialmist.aether.essentials.wrapper.CommandWrapper;
-import aetherial.spigot.plugin.annotation.command.CommandTag;
+import com.github.aetherialmist.spigot.plugin.annotation.command.CommandTag;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
